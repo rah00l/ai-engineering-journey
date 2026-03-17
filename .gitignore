@@ -1,0 +1,25 @@
+# Secrets & environment variables
+.env
+.env.*
+!.env.example
+
+# OS / editor files
+.DS_Store
+*.swp
+*.log
+
+# Ruby
+.bundle
+vendor/bundle
+
+# Python (future)
+__pycache__/
+*.pyc
+.venv
+
+# Node (just in case later)
+node_modules/
+
+# Docker overrides / local-only files
+docker-compose.override.yml
+``
