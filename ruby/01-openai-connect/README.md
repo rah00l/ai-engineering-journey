@@ -1,98 +1,93 @@
-
-# OpenAI Ruby API – Minimal Kickstart
-
-Minimal, Dockerized Ruby script to test connectivity with the OpenAI API.
-
-This repository serves as a **kickstart and validation step** for integrating AI models into Ruby-based systems, without introducing frameworks or local dependency issues.
-
----
+# v0.1.0 — LLM API Connectivity (Ruby + Docker)
 
 ## Purpose
 
-- Verify OpenAI API access and authentication  
-- Understand basic request/response flow with an LLM  
-- Establish a clean, reproducible setup using Docker  
-- Act as a foundation for further AI engineering experiments  
+Establish a minimal, production-style foundation for interacting with a Large Language Model (LLM)
+by treating it as an external HTTP service, similar to any third-party API.
+
+This milestone validates end-to-end connectivity, authentication, and deployment setup
+without introducing application logic or frameworks.
 
 ---
 
-## What It Does
+## Scope
 
-- Sends a prompt to the OpenAI Chat Completions API  
-- Receives a response from the model  
-- Prints the generated text to the console  
+✅ Includes:
+- Calling OpenAI Chat Completions API from Ruby
+- Secure API key handling via environment variables
+- Dockerized runtime setup
+- Minimal request/response handling
+
+❌ Excludes:
+- Interactive user input
+- Business or domain-specific logic
+- Structured outputs
+- Reliability mechanisms (retries, cost tracking)
+- System or database integration
+
+---
+
+## What This Demonstrates
+
+- LLMs are external services, not embedded intelligence
+- API-first thinking for AI systems
+- Secure configuration management
+- Reproducible execution using Docker
+
+This milestone answers the question:
+**“Can I reliably call an LLM in a production-style setup?”**
 
 ---
 
 ## Tech Stack
 
-- **Ruby** – scripting language  
-- **HTTParty** – HTTP client for API calls  
-- **Docker** – environment isolation and reproducibility  
+- Ruby 3.x
+- HTTParty (HTTP client)
+- OpenAI Chat Completions API
+- Docker & Docker Compose
 
 ---
 
-## Model Used
-
-- `gpt-4o-mini`
-
-Chosen for:
-- low cost
-- fast responses
-- suitability for experimentation
-
----
-
-## Project Structure
+## Folder Structure
 
 ```
 
-openai-ruby-test/
+01-openai-connect/
 ├── Dockerfile
 ├── docker-compose.yml
 ├── Gemfile
 ├── Gemfile.lock
-├── .env.example
-└── openai\_test.rb
-
-```
-
----
-
-## Setup
-
-1. Copy `.env.example` to `.env`
-2. Add your OpenAI API key:
-```
-
-OPENAI\_API\_KEY=sk-xxxxxxxx
+├── openai\_test.rb
+├── README.md
+└── .env.example
 
 ````
 
 ---
 
-## Run
+## How to Run
+
+1. Create a `.env` file from `.env.example` and add your API key.
+
+2. From this folder, run:
 
 ```bash
 docker compose build
-docker compose run --rm openai-test
+docker compose run openai-test
 ````
 
-You should see an AI-generated response printed to the console.
+***
+
+## Example Output
+
+    AI engineering is the discipline of designing, building, and operating
+    AI-powered systems using software engineering principles.
 
 ***
 
-## Scope
+## Key Learnings
 
-This repository intentionally focuses on **only API connectivity**.
-
-It does **not** cover:
-
-*   application architecture
-*   state or memory
-*   document retrieval
-*   RAG or agents
-
-Those will be added incrementally in future iterations.
-
-***
+*   LLM APIs behave like any other unreliable external dependency
+*   Environment variables are mandatory for secure configuration
+*   Docker eliminates local setup drift
+*   Prompting is not intelligence — it is interface design
