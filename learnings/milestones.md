@@ -41,6 +41,33 @@ This revealed the need for:
 
 Prompt boundary tightening significantly improved alignment.
 
+---
+
+## v0.3.0 — Structured, Rule‑Faithful Explanations (JSON)
+
+### What We Expected
+- JSON output would improve consistency and enable validation.
+- Behavior would remain similar to v0.2.0 but more structured.
+
+### What Actually Happened
+- The AI sometimes refused with `INSUFFICIENT_CONTEXT` for the same input.
+- This appeared inconsistent but was rule‑consistent behavior.
+
+### Concrete Example
+- Input: "What does PARTIALLY RECONCILED mean?"
+- Output alternated between valid JSON and refusal.
+- This occurred only when assistant responses were reused as memory.
+
+### What We Learned
+- The model does not treat its own outputs as ground truth.
+- Conversational memory conflicts with strict output contracts.
+- Refusal is safer than guessing under strong constraints.
+- Structure exposes uncertainty that free text hides.
+
+### Mental Model Update
+- v0.2.0: AI as a conversational assistant.
+- v0.3.0: AI as a deterministic system component.
+- Deterministic components must be stateless to remain reliable.
 
 ---
 

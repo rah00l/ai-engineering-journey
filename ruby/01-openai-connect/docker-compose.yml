@@ -1,8 +1,6 @@
-version: "3.9"
 
 services:
-  openai-test:
+  v0_1_openai_test:
     build: .
-    container_name: openai_ruby_test
     env_file:
-      - .env.example
+      - .env

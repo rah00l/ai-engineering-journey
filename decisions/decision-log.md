@@ -43,3 +43,37 @@ AI access to transactional data will be introduced only after:
 We intentionally built an interactive console before adding document retrieval
 or database context to understand AI conversational behavior and failure modes safely.
 
+---
+
+## Decision 004: Stateless Execution for Structured AI Components
+
+### Context
+- In v0.2.0, the AI was conversational.
+- Previous assistant responses were passed as memory to support follow‑ups.
+- Output was free text, and approximation was acceptable.
+
+### Trigger (What Happened)
+- In v0.3.0, strict JSON output contracts were introduced.
+- When the same question was asked repeatedly, responses alternated:
+  - Sometimes valid JSON
+  - Sometimes `INSUFFICIENT_CONTEXT`
+
+### Root Cause
+- Previous assistant responses were fed back as conversation memory.
+- The model re‑evaluated its own prior output under stricter rules.
+- Under zero‑guessing constraints, the safest option became refusal.
+
+### Decision Made
+- Structured, contract‑based AI components must be stateless.
+- Assistant outputs must not be reused as conversational memory.
+
+### Why This Decision
+- Conversational memory assumes trust in earlier AI output.
+- Strict contracts require independent, zero‑trust evaluation.
+- Stateless execution avoids feedback loops and instability.
+
+### Forward Impact
+- v0.3.0 and later decision components will be stateless.
+- Memory will be reintroduced later in a controlled, data‑driven way
+  (not conversational replay).
+---
