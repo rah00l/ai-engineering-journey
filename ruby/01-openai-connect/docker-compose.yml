@@ -1,4 +1,3 @@
-
 services:
   v0_1_openai_test:
     build: .

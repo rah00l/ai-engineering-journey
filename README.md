@@ -15,4 +15,19 @@ The focus is on:
 
 The repository evolves by **adding new stages**, not rewriting old ones.
 
-``
+
+## Milestones Overview
+
+- **v0.3.0 – Structured JSON Output**
+  - Introduced strict JSON-only AI responses
+
+- **v0.3.1 – Structured Output & AI Boundary Lock**
+  - Froze deterministic output schema
+  - Isolated AI calls behind a defensive boundary
+  - Established a trusted foundation for system hardening
+
+- **v0.4.0 – Design Lock (In Progress)**
+  - Failure classification
+  - Retry policies
+  - Latency and cost controls
+  - Safe failure and trust preservation

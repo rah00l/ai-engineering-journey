@@ -1,5 +1,5 @@
 services:
-  v0_3_ai_structured_console:
+  v0_3_1_ai_structured_console:
     build: .
     env_file:
       - .env
