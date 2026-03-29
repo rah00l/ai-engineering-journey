@@ -1,193 +1,159 @@
+# AI Engineering Roadmap
 
-# AI Engineering Journey
+This roadmap describes the planned evolution of the AI Analyst Assistant,
+built incrementally while integrating AI into an existing enterprise
+reconciliation system.
 
-This repository captures my **personal AI engineering learning journey**, focused on
-building AI systems with engineering discipline rather than demos or one-off scripts.
-
-The goal is to move incrementally from basic LLM integration to reliable,
-explainable, and system-safe AI components.
-
----
-
-## Problem Context
-
-The primary use case explored in this repository is an **AI assistant for a complex
-enterprise reconciliation system**.
-
-The existing system contains:
-- many business rules
-- multiple processing states and error conditions
-- background system decisions that are not always obvious to end users
-
-Accounting and operations users frequently need clarity on:
-- *why* a specific outcome occurred
-- *which* rule was applied
-- *what*, if any, action is required from them
-
-The AI assistant being developed here is intended to **explain system behavior**,  
-**not execute actions or modify data**.
+The focus is on **engineering discipline**, not demos:
+correctness → reliability → grounding → system integration.
 
 ---
 
-## Repository Structure
+## End Goal
 
-This repository evolves by **adding new milestones**, not rewriting old ones.
+Build a **safe, explainable AI Analyst Assistant** that helps
+accounting and operations users understand *why* system outcomes occur,
+without executing actions or modifying data.
 
-```
-
-ruby/
-docs/
-decisions/
-learnings/
-
-```
-
-- Each milestone lives in its own folder with a dedicated README
-- Design choices are captured under `decisions/`
-- Learnings are captured under `learnings/`
-- High-level planning is kept under `docs/`
+Golden rule:
+**System decides. AI explains.**
 
 ---
 
-## Milestones (Navigation)
+## Phase 0 — Foundations (LLM as a Service) ✅
 
-Each milestone is tagged and documented individually.
+### v0.1.0 — LLM API Connectivity
+**Goal**
+- Treat LLMs as unreliable external services
+- Establish reproducible execution
 
-- **v0.1.0 — LLM API Connectivity**  
-  👉 `ruby/01-openai-connect/`
-
-- **v0.2.0 — Interactive AI Console**  
-  👉 `ruby/02-interactive-console/`
-
-- **v0.3.0 — Structured, Stateless JSON Explanations**  
-  👉 `ruby/03-structured-json/`
-
-Upcoming milestones will focus on reliability, controlled context,
-knowledge grounding (RAG), and safe system integration.
+**Key Outcomes**
+- Basic OpenAI API integration
+- Dockerized runtime
+- Environment-based configuration
 
 ---
 
-## Roadmap
+### v0.2.0 — Interactive AI Console
+**Goal**
+- Observe conversational behavior
+- Surface hallucinations and domain drift
 
-A concise, evolving roadmap is maintained separately:
+**Key Outcomes**
+- CLI-based interaction
+- Domain-aware system prompt
+- Early safety boundaries
 
-👉 `docs/AI_ENGINEERING_ROADMAP.md`
+---
 
-This roadmap reflects intent and direction and may evolve based on
-real implementation experience and constraints.
-```
+## Phase 1 — Determinism & Trust ✅
 
-***
+### v0.3.0 — Structured, Rule-Faithful Explanations (JSON)
+**Goal**
+- Eliminate free-text ambiguity
+- Enable testable AI output
 
-# ✅ 2. Roadmap File Location (Locked)
+**Key Outcomes**
+- Strict JSON-only responses
+- Fixed schema
+- Explicit refusal for missing context
+- Stateless execution
 
-You’ve made a **good call** to move the roadmap out of the root.
+---
 
-✅ Final location:
+### v0.3.1 — AI Call Boundary
+**Goal**
+- Prepare the system for reliability hardening
 
-    docs/AI_ENGINEERING_ROADMAP.md
+**Key Outcomes**
+- All AI calls isolated behind a single boundary
+- No direct OpenAI calls in business logic
 
-✅ Why this is ideal:
+---
 
-*   Keeps root README focused
-*   Signals “internal planning”, not marketing
-*   Still easy to find and reference
-*   Very professional (common in real repos)
+### v0.4.0 — Reliability & Guardrails (Current)
+**Goal**
+- Make AI safe to depend on in operational workflows
 
-You already have the roadmap content — just move it into `docs/`.
+**Key Outcomes**
+- Failure classification (success, refusal, retryable, terminal)
+- Bounded retry behavior
+- Latency and timeout control
+- Cost-safe execution
+- Explicit fallback responses
 
-***
+This is where AI stops behaving like a demo and starts behaving like infrastructure.
 
-# ✅ 3. Navigation: Clicking Milestones Goes Directly to Code
+---
 
-You asked specifically about this 👇
+## Phase 2 — Context & Domain Grounding
 
-> “When we click the first line of the milestone title, can we navigate directly to the folder where the code and README are?”
+### v0.5.0 — Controlled Context & Memory
+- Bounded conversational context
+- Safe truncation strategies
+- Prevent runaway prompts and cost
 
-✅ **Yes — and you’re already doing it the correct way**.
+---
 
-### ✅ This is how GitHub works (and it’s standard)
+### v0.6.0 — Document-Aware Reasoning (Pre-RAG)
+- Inject reconciliation handbook content
+- Rule-specific explanations with citations
+- No DB access yet
 
-In the root README, this line:
+---
 
-```markdown
-👉 `ruby/03-structured-json/`
-```
+## Phase 3 — Knowledge Systems (RAG)
 
-✅ Clicking it:
+### v1.0.0 — Retrieval-Augmented Generation
+- Embeddings and semantic search
+- Grounded explanations
+- Source-aware responses
 
-*   opens the folder
-*   shows the files
-*   auto-renders the **folder‑level README.md**
+---
 
-You do **not** need:
+### v1.1.0 — Vector Database Integration
+- Scalable retrieval
+- Metadata-aware search
+- Latency optimization
 
-*   custom GitHub configuration
-*   branches
-*   tag-based README switching
+---
 
-Folder README navigation is **the standard mechanism**.
+## Phase 4 — System Architecture
 
-***
+### v1.2.0 — AI as a Separate Service
+- Python + FastAPI service
+- Strict API contracts
+- Language-agnostic integration
 
-### ✅ Optional improvement (if you want)
+---
 
-If you ever want to link **directly to a tag + folder**, you can later do:
+### v1.3.0 — Multi-Step AI Pipelines
+- Structured reasoning workflows
+- No side effects or data mutation
 
-```markdown
-👉 v0.3.0 — Structured JSON  
-https://github.com/<user>/<repo>/tree/v0.3.0/ruby/03-structured-json
-```
+---
 
-But this is **optional** and usually unnecessary for a private repo.
+## Phase 5 — Safe Access to System Data
 
-***
+### v2.0.0 — Read-Only Transactional Context
+- Instance-level “why” explanations
+- Read-only system facts
 
-# ✅ 4. Final Confirmation of Decisions Locked
+---
 
-Let’s clearly confirm everything you’ve decided, so there’s no mental overhead later.
+### v2.1.0 — Observability & Evaluation
+- Latency and cost metrics
+- Hallucination detection
+- Human-in-the-loop feedback
 
-✅ This repository is **private and learning-focused**  
-✅ Roadmap lives under `docs/`  
-✅ Root README:
+---
 
-*   explains problem context
-*   lists milestones
-*   provides clean navigation links
-    ✅ Each milestone:
-*   has its own folder
-*   has its own README
-    ✅ Git tags mark milestone states
-    ✅ Decisions & learnings are explicitly documented
+## Phase 6 — Capstone
 
-Nothing here signals:
+### v3.0.0 — End-to-End Enterprise AI System
+- Clean architecture
+- Explainable AI
+- Reliable guardrails
+- Real domain problem
 
-*   blind AI usage
-*   lack of ownership
-*   “prompt-only” development
-
-In fact, the opposite.
-
-***
-
-# ✅ What You Can Safely Do Now
-
-1.  Add / update root `README.md` using the above version
-2.  Move the roadmap to `docs/AI_ENGINEERING_ROADMAP.md`
-3.  Commit those changes (no new tag needed)
-
-After that, this repo is in a **very clean, stable state**.
-
-***
-
-## 🏁 When You’re Ready
-
-Next step remains unchanged and well-positioned:
-
-👉 **v0.4.0 — Reliability, Retries, and Cost Awareness**
-
-Whenever you want, just say:
-
-> **“Proceed to v0.4.0.”**
-
-You’re building this with real engineering maturity.
+Each version tag represents a coherent, interview-ready engineering story.

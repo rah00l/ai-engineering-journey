@@ -71,3 +71,21 @@ Prompt boundary tightening significantly improved alignment.
 
 ---
 
+
+## v0.4.0 — Reliability & Guardrails
+
+**Goal**
+- Make AI behavior predictable under failure
+- Prevent AI from blocking or destabilizing operational workflows
+
+**What We Learned**
+- Correctness alone is insufficient for production AI
+- AI failures must be classified, not treated uniformly
+- Retries are business decisions, not technical defaults
+- Latency and cost are architectural concerns
+- Safe failure preserves more trust than partial success
+
+**Mental Model Update**
+- v0.3.x: “AI answers must be correct”
+- v0.4.0: “AI behavior must be predictable under stress”
+
