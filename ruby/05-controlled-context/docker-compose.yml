@@ -1,0 +1,5 @@
+services:
+  v0_5_ai_controlled_context:
+    build: .
+    env_file:
+      - .env
