@@ -13,8 +13,7 @@ require_relative "trust_contract"
 require_relative "context/analysis_context"
 
 # ============================================================
-# Phase 5.2 helper
-# MUST be defined BEFORE main loop (Ruby rule)
+# Phase 5.2 helper — intent inference
 # ============================================================
 def infer_focus(user_prompt)
   case user_prompt
@@ -30,6 +29,41 @@ def infer_focus(user_prompt)
 end
 
 # ============================================================
+# Phase 5.3 helper — blocking & responsibility
+# ============================================================
+def determine_blocking(context)
+  focus  = context.current_focus
+  status = context.file_state[:status]
+
+  # Default: not blocked
+  blocking = {
+    is_blocked: false,
+    reason: nil,
+    responsibility: :NONE
+  }
+
+  # --- Phase 5.3 blocking rules ---
+  if focus == :error_meaning
+    case status
+    when "MAPPING_ERROR"
+      blocking = {
+        is_blocked: true,
+        reason: :INSUFFICIENT_TRANSACTION_CONTEXT,
+        responsibility: :USER
+      }
+    when "PROCESSING"
+      blocking = {
+        is_blocked: true,
+        reason: :SYSTEM_STILL_PROCESSING,
+        responsibility: :SYSTEM
+      }
+    end
+  end
+
+  blocking
+end
+
+# ============================================================
 # AI boundary setup (unchanged from v0.4.x)
 # ============================================================
 api_key = ENV["OPENAI_API_KEY"]
@@ -41,22 +75,20 @@ ai = AiCallBoundary.new(
 )
 
 # ============================================================
-# Base system prompt (authoritative, reused)
+# Base system prompt (authoritative)
 # ============================================================
 BASE_SYSTEM_PROMPT = <<~PROMPT
   You are an AI analyst assistant for a payment reconciliation system.
 PROMPT
 
 # ============================================================
-# Console interaction loop (outer loop)
+# Console interaction loop
 # ============================================================
 puts "Enter your question (or type 'exit'):"
 
 while (input = STDIN.gets&.strip)
-
   break if input.downcase == "exit"
 
-  # Reset safety guards per question
   LatencyBudget.start!
   CostGuard.start!
 
@@ -64,25 +96,21 @@ while (input = STDIN.gets&.strip)
   failure = nil
 
   # ========================================================
-  # Retry loop (inner loop)
+  # Retry loop
   # ========================================================
   loop do
     begin
-      # ----------------------------
-      # Guard accounting
-      # ----------------------------
       CostGuard.record!
 
       # ----------------------------
-      # Phase 5.2: intent extraction
+      # Phase 5.2 — intent inference
       # ----------------------------
       focus = infer_focus(input)
 
       # ----------------------------
-      # Phase 5.2: build context
-      # (local reasoning only)
+      # Phase 5.2 — initial context
       # ----------------------------
-      context = AnalysisContext.new(
+      base_context = AnalysisContext.new(
         session_id: SecureRandom.uuid,
         subject: { type: "payment_file", id: "PF-123" }, # placeholder
         file_state: {
@@ -90,15 +118,55 @@ while (input = STDIN.gets&.strip)
           status_category: "ERROR"
         },
         current_focus: focus,
-
-        # Phase 5.2 placeholders (not used yet)
         reasoning_budget: { turns_remaining: nil },
-        lifecycle: { created_at: Time.now }
+        lifecycle: { created_at: Time.now },
+        blocking_condition: nil
       )
 
       # ----------------------------
-      # Phase 5.2: focused system prompt
-      # IMPORTANT: JSON rule is LAST
+      # Phase 5.3 — determine blocking
+      # ----------------------------
+      blocking = determine_blocking(base_context)
+
+      context = AnalysisContext.new(
+        session_id: base_context.session_id,
+        subject: base_context.subject,
+        file_state: base_context.file_state,
+        current_focus: base_context.current_focus,
+        reasoning_budget: base_context.reasoning_budget,
+        lifecycle: base_context.lifecycle,
+        blocking_condition: blocking
+      )
+
+      # ----------------------------
+      # Phase 5.3 — blocked response path
+      # ----------------------------
+      if context.blocking_condition[:is_blocked]
+        response = {
+          status: "BLOCKED",
+          reason: context.blocking_condition[:reason],
+          responsibility: context.blocking_condition[:responsibility],
+          message: case context.blocking_condition[:responsibility]
+                   when :USER
+                     "More information is required to determine why this happened."
+                   when :SYSTEM
+                     "The system has not completed processing yet."
+                   when :SUPPORT
+                     "This requires investigation by the support team."
+                   else
+                     "This request is currently blocked."
+                   end
+        }
+
+        puts JSON.pretty_generate(
+          TrustContract.success(response)
+        )
+        break
+      end
+
+      # ----------------------------
+      # Phase 5.2 — focused explanation prompt
+      # (JSON instruction MUST be last)
       # ----------------------------
       system_prompt =
         case context.current_focus
@@ -128,31 +196,21 @@ while (input = STDIN.gets&.strip)
         end
 
       # ----------------------------
-      # AI call (boundary unchanged)
+      # AI call (unchanged boundary)
       # ----------------------------
       result = ai.explain(
         system_prompt: system_prompt,
         user_prompt: input
       )
 
-      # ----------------------------
-      # Success path
-      # ----------------------------
       puts JSON.pretty_generate(
         TrustContract.success(result)
       )
 
-      break  # <-- exits retry loop
+      break
 
     rescue => e
-      # ----------------------------
-      # Failure handling
-      # ----------------------------
       failure = FailureClassification.classify(e)
-
-      puts "DEBUG_EXCEPTION_CLASS: #{e.class}"
-      puts "DEBUG_EXCEPTION_MESSAGE: #{e.message}"
-      puts e.backtrace.take(5).join("\n")
 
       break unless RetryPolicy.retry?(failure, attempt)
       break if LatencyBudget.exceeded?
@@ -163,7 +221,7 @@ while (input = STDIN.gets&.strip)
   end
 
   # ==========================================================
-  # Terminal failure path (after retries)
+  # Terminal failure path
   # ==========================================================
   if failure
     fallback = SafetyFallback.build(failure)
