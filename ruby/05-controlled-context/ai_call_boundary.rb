@@ -46,6 +46,7 @@ class AiCallBoundary
     request.body = {
       model: @model,
       temperature: 0.0,
+      response_format: { type: "json_object" },
       messages: [
         { role: "system", content: system_prompt },
         { role: "user", content: user_prompt }
