@@ -51,6 +51,10 @@ while (input = STDIN.gets&.strip)
     rescue => e
       failure = FailureClassification.classify(e)
 
+      puts "DEBUG_EXCEPTION_CLASS: #{e.class}"
+      puts "DEBUG_EXCEPTION_MESSAGE: #{e.message}"
+      puts e.backtrace.take(5).join("\n")
+
       break unless RetryPolicy.retry?(failure, attempt)
       break if LatencyBudget.exceeded?
       break if CostGuard.exceeded?
