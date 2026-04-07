@@ -1,171 +1,343 @@
+### **v0.5.0 — Controlled Context & Semantic Reasoning (Phase 2)**
 
-## **v0.4.0 — Reliability, Retries, Cost & Latency Guardrails**
+### Purpose
 
-## Purpose
+This milestone introduces **controlled conversational reasoning** for the AI Analyst Assistant.
 
-This milestone introduces **operational reliability** for the AI Analyst Assistant.
+While v0.4.0 focused on **operational reliability** (timeouts, retries, failures),
+v0.5.0 focuses on **cognitive behavior**:
+how the assistant reasons across questions, handles follow‑ups, and knows when to stop or reset.
 
-While earlier milestones focused on **correct and structured AI explanations**,  
-v0.4.0 defines **how the system behaves when AI is slow, unavailable, fails, or refuses**.
-
-The intent is to make AI a **safe, predictable system dependency**, not a best‑effort helper.
+The intent is to make AI explanations feel **human‑like but enterprise‑safe**.
 
 ***
 
-This version explicitly distinguishes:
+### Scope
 
-*   v0.3.0 → correctness
-*   v0.3.1 → boundary refactor
-*   v0.4.0 → operational behavior
+✅ **Includes:**
 
-## Scope
+*   Explicit reasoning context (`AnalysisContext`)
+*   Intent‑aware explanation modes (meaning / cause / next steps)
+*   Strict separation of system facts vs AI explanations
+*   Progressive disclosure of information
+*   Safe blocking with reason and responsibility
+*   Bounded short‑term conversational continuity
+*   Explicit session lifecycle and intentional forgetting
 
-✅ Includes:
+❌ **Excludes:**
 
-*   Explicit failure classification
-*   Foundations for retry control
-*   Latency and timeout boundaries
-*   Cost-safe execution behavior
-*   Safe fallback responses
-
-❌ Excludes:
-
-*   Conversational memory
+*   Long‑term memory or historical storage
 *   RAG or document retrieval
 *   Database or transaction access
-*   Business rule execution
-*   UI integration
+*   Workflow execution or automation
+*   Model fine‑tuning
 
 ***
 
-## Version Progression (Clear Differentiation)
+### Version Progression (Clear Differentiation)
 
-### v0.3.0 — Structured Correctness
+*   **v0.3.x** — Structured correctness  
+    *“If the AI answers, the answer must be correct.”*
 
-*   Enforced strict JSON contract
-*   Guaranteed deterministic, stateless output
-*   Introduced logical refusal (`INSUFFICIENT_CONTEXT`)
+*   **v0.4.0** — Operational reliability  
+    *“AI behavior must remain predictable under failure.”*
 
-**Focus:** “If AI replies, the reply is correct.”
-
-***
-
-### v0.3.1 — AI Call Boundary (Structural Refactor)
-
-*   Centralized all OpenAI calls into a single boundary
-*   Removed direct AI calls from business logic
-*   No behavior change under failure
-
-**Focus:** “Where reliability *can* be implemented.”
+*   **v0.5.0** — Semantic reasoning (this milestone)  
+    *“AI must reason like a trained analyst, with limits.”*
 
 ***
 
-### v0.4.0 — Operational Reliability (This Milestone)
+### Core Semantic Concepts Introduced
 
-*   Classified AI outcomes (success, refusal, retryable failure, terminal failure)
-*   Explicit handling of timeouts and slowness
-*   Bounded retry behavior
-*   Cost containment by design
-*   Intentional fallbacks for AI unavailability
+v0.5.0 formalizes the semantic rules required for safe, human‑like conversation:
 
-**Focus:** “What happens when AI does NOT behave ideally.”
+*   **Reasoning State** — recognition of conversational context
+*   **Context Window Management** — intent‑based focus control
+*   **Separation of Facts vs AI Output** — hallucination prevention
+*   **Progressive Disclosure** — stepwise explanations
+*   **Failure‑Safe Continuation** — explained blocking instead of guessing
+*   **Bounded Working Memory** — limited follow‑up reasoning
+*   **Intentional Forgetting** — explicit context reset
+*   **Session Scope** — clean conversation boundaries
 
-***
-
-## Core Concepts Introduced
-
-*   **AI as Infrastructure**  
-    AI is treated as an unreliable external dependency, similar to payment or risk services.
-
-*   **Failure-Aware Design**  
-    Not all failures are equal; behavior depends on failure type.
-
-*   **Bounded Behavior**  
-    AI execution is finite, predictable, and safe under stress.
-
-*   **Fail-Safe Philosophy**  
-    AI never blocks reconciliation workflows or misleads users.
+These concepts control *how* reasoning occurs, not *what* the AI knows.
 
 ***
 
 ## Example Behavior
 
-**Scenario:**  
-User requests explanation while reconciliation jobs are still processing.
+This milestone changes **how the AI responds across a sequence of questions**, not just individual prompts.
 
-**Outcome:**
+**Scenario: Payment Reconciliation Error Explanation**
 
-*   AI times out or lacks context
-*   System returns an explicit, non-blocking message
-*   No retry occurs for logical refusals
+**User Input**
 
-The business workflow continues uninterrupted.
+    What does MAPPING ERROR – Payment ID Not Found mean?
+
+**Expected Behavior**
+
+*   AI explains the meaning of the status only
+*   No assumptions about cause or remediation
+*   Response is grounded in system state
+
+***
+
+**User Input**
+
+    Why did this happen?
+
+**Expected Behavior**
+
+*   AI evaluates legitimacy of the request
+*   If context allows, provides a bounded explanation
+*   Otherwise, returns an explicit BLOCKED response with responsibility
+
+***
+
+**User Input**
+
+    Why did this happen?
+
+**Expected Behavior**
+
+*   AI blocks further reasoning
+*   Reason: bounded working memory exhausted
+*   User is prompted to restart analysis
+
+***
+
+**User Input**
+
+    What does PARTIALLY RECONCILED mean?
+
+**Expected Behavior**
+
+*   Previous context is intentionally forgotten
+*   New explanation is generated in a clean reasoning session
+
+This sequence demonstrates:
+
+*   intent‑aware reasoning
+*   bounded conversational continuity
+*   explicit stopping and reset behavior
 
 ***
 
 ## Reliability Validation
 
-This milestone was validated using simulated failure scenarios to ensure
-AI behavior remains safe and predictable under stress.
+v0.5.0 was validated using **console‑driven workflows**, extending the reliability guarantees introduced in v0.4.0 into the **cognitive domain**.
 
-Validated scenarios include:
-- Invalid or malformed AI output
-- External API rate limiting
-- Network timeouts
-- Terminal failure conditions
-- Successful responses passing through transparently
+Validation confirmed that the AI Analyst Assistant:
 
-In all cases, the AI Analyst Assistant:
-- responded deterministically
-- avoided infinite retries
-- preserved workflow continuity
-- returned explicit, user-safe messages
+*   never hallucinates causes when context is insufficient
+*   blocks responsibly instead of guessing
+*   prevents unbounded follow‑up reasoning
+*   resets context deterministically between conversations
+*   remains stateless at execution level
+
+### Test Coverage
 
 Detailed test scenarios and console outputs are documented here:
 
-👉 docs/AI_ANALYST_RELIABILITY_TESTS.md
+👉 `docs/AI_ANALYST_SEMANTIC_CONTEXT_TESTS.md`
+📄 `docs/AI_ANALYST_SEMANTIC_CONTEXT_TESTS.md`
 
-## Folder Structure
+These tests incrementally validate behavior across internal phases:
 
-    04-reliability-guardrails/
-    ├── Dockerfile
-    ├── docker-compose.yml
-    ├── Gemfile
-    ├── Gemfile.lock
-    ├── ai_structured_console.rb
-    ├── ai_call_boundary.rb
-    ├── cost_guard.rb
-    ├── failure_classification.rb
-    ├── latency_budget.rb
-    ├── retry_policy.rb
-    ├── safety_fallback.rb
-    ├── trust_contract.rb
-    ├── failure_classification.rb
-    ├── README.md
-    └── .env.example
+*   5.1 — reasoning state existence
+*   5.2 — intent differentiation
+*   5.3 — failure‑safe blocking
+*   5.4 — bounded continuity
+*   5.5 — lifecycle & intentional forgetting
 
 ***
 
+## Folder Structure
 
-## Why This Milestone Matters
+    .
+    ├── ai_structured_system_console.rb
+    ├── ai_call_boundary.rb
+    ├── context/
+    │   └── analysis_context.rb
+    ├── failure_classification.rb
+    ├── retry_policy.rb
+    ├── latency_budget.rb
+    ├── cost_guard.rb
+    ├── safety_fallback.rb
+    ├── trust_contract.rb
+    ├── docs/
+    │   ├── AI_ANALYST_RELIABILITY_TESTS.md
+    │   └── AI_ANALYST_SEMANTIC_CONTEXT_TESTS.md
 
-*   Prevents flaky AI behavior
-*   Avoids hidden cost amplification
-*   Preserves accounting and ops trust
-*   Makes future capabilities (memory, RAG, DB context) safe to add
-
-This milestone is mandatory before expanding AI intelligence.
+*   Core reasoning semantics are encapsulated in `AnalysisContext`
+*   Orchestration logic remains isolated in the console
+*   All AI calls pass through a single boundary
+*   Test documentation evolves independently of code
 
 ***
 
 ## Key Learnings
 
-*   Reliability is separate from correctness
-*   Retries are business decisions, not technical defaults
-*   Latency affects trust more than accuracy
-*   Cost must be architecturally contained
-*   Safe failure is better than partial success
+*   Human‑like AI behavior emerges from **semantic discipline**, not memory size
+*   Intent awareness eliminates redundant or misleading explanations
+*   Explicit blocking increases trust more than partial answers
+*   Bounded reasoning prevents cognitive drift and looping
+*   Forgetting must be **intentional and deterministic**
+*   Stateless execution with semantic control is safer than conversational memory
+
+**Mental Model Update**
+
+*   v0.4.0: *AI must behave predictably under operational stress*
+*   v0.5.0: *AI must reason like a human analyst, with clear limits*
+
+***
+
+## Example Behavior
+
+This milestone changes **how the AI responds across a sequence of questions**, not just individual prompts.
+
+**Scenario: Payment Reconciliation Error Explanation**
+
+**User Input**
+
+    What does MAPPING ERROR – Payment ID Not Found mean?
+
+**Expected Behavior**
+
+*   AI explains the meaning of the status only
+*   No assumptions about cause or remediation
+*   Response is grounded in system state
+
+***
+
+**User Input**
+
+    Why did this happen?
+
+**Expected Behavior**
+
+*   AI evaluates legitimacy of the request
+*   If context allows, provides a bounded explanation
+*   Otherwise, returns an explicit BLOCKED response with responsibility
+
+***
+
+**User Input**
+
+    Why did this happen?
+
+**Expected Behavior**
+
+*   AI blocks further reasoning
+*   Reason: bounded working memory exhausted
+*   User is prompted to restart analysis
+
+***
+
+**User Input**
+
+    What does PARTIALLY RECONCILED mean?
+
+**Expected Behavior**
+
+*   Previous context is intentionally forgotten
+*   New explanation is generated in a clean reasoning session
+
+This sequence demonstrates:
+
+*   intent‑aware reasoning
+*   bounded conversational continuity
+*   explicit stopping and reset behavior
+
+***
+
+## Reliability Validation
+
+v0.5.0 was validated using **console‑driven workflows**, extending the reliability guarantees introduced in v0.4.0 into the **cognitive domain**.
+
+Validation confirmed that the AI Analyst Assistant:
+
+*   never hallucinates causes when context is insufficient
+*   blocks responsibly instead of guessing
+*   prevents unbounded follow‑up reasoning
+*   resets context deterministically between conversations
+*   remains stateless at execution level
+
+### Test Coverage
+
+Detailed test scenarios and console outputs are documented here:
+
+👉 `docs/AI_ANALYST_SEMANTIC_CONTEXT_TESTS.md`
+
+These tests incrementally validate behavior across internal phases:
+
+*   5.1 — reasoning state existence
+*   5.2 — intent differentiation
+*   5.3 — failure‑safe blocking
+*   5.4 — bounded continuity
+*   5.5 — lifecycle & intentional forgetting
+
+***
+
+## Folder Structure
+
+    .
+    ├── ai_structured_system_console.rb
+    ├── ai_call_boundary.rb
+    ├── context/
+    │   └── analysis_context.rb
+    ├── failure_classification.rb
+    ├── retry_policy.rb
+    ├── latency_budget.rb
+    ├── cost_guard.rb
+    ├── safety_fallback.rb
+    ├── trust_contract.rb
+    ├── docs/
+    │   ├── AI_ANALYST_RELIABILITY_TESTS.md
+    │   └── AI_ANALYST_SEMANTIC_CONTEXT_TESTS.md
+
+*   Core reasoning semantics are encapsulated in `AnalysisContext`
+*   Orchestration logic remains isolated in the console
+*   All AI calls pass through a single boundary
+*   Test documentation evolves independently of code
+
+***
+
+## Key Learnings
+
+*   Human‑like AI behavior emerges from **semantic discipline**, not memory size
+*   Intent awareness eliminates redundant or misleading explanations
+*   Explicit blocking increases trust more than partial answers
+*   Bounded reasoning prevents cognitive drift and looping
+*   Forgetting must be **intentional and deterministic**
+*   Stateless execution with semantic control is safer than conversational memory
+
+**Mental Model Update**
+
+*   v0.4.0: *AI must behave predictably under operational stress*
+*   v0.5.0: *AI must reason like a human analyst, with clear limits*
+
+***
+
+### Why This Milestone Matters
+
+Without controlled semantics:
+
+*   conversational memory amplifies hallucinations
+*   follow‑ups become unsafe
+*   reasoning becomes unbounded
+
+v0.5.0 ensures:
+
+*   explanations remain grounded
+*   follow‑ups are deliberate and limited
+*   reasoning stops intentionally
+*   context never leaks across conversations
+
+This milestone is a **mandatory foundation** before introducing knowledge grounding (RAG).
 
 ✅ **Status:** Locked  
-➡️ **Next:** v0.5.0 — Controlled Context & Safe Memory
+➡️ **Next:** Phas 6 — Knowledge Grounding (RAG)
+
+***
 

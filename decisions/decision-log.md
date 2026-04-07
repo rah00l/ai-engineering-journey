@@ -77,3 +77,176 @@ or database context to understand AI conversational behavior and failure modes s
 - Memory will be reintroduced later in a controlled, data‑driven way
   (not conversational replay).
 ---
+
+## **Decision 005: Introduce Explicit Semantic Context Instead of Conversational Memory**
+
+### Context
+
+Earlier versions explored conversational memory by replaying assistant outputs.
+While useful for demos, this approach introduced instability under strict output contracts and made reasoning behavior unpredictable.
+
+### Decision
+
+The AI Analyst Assistant will **not use conversational replay or implicit memory**.
+Instead, all conversational behavior will be governed by **explicit semantic context**, represented through structured models (e.g., `AnalysisContext`).
+
+### Rationale
+
+*   Conversational memory assumes correctness of past AI output.
+*   Strict enterprise systems require **zero‑trust evaluation**.
+*   Semantic context allows controlled continuity without trusting previous responses.
+*   This mirrors how deterministic systems reason safely.
+
+### Impact
+
+*   Prevents hallucination amplification.
+*   Enables bounded follow‑ups without persistence.
+*   Forms the foundation for safe future memory (RAG, DB context).
+
+***
+
+## **Decision 006: Review Domain Handbook Before Encoding Semantic Rules**
+
+### Context
+
+As the system moved toward conversational continuity, understanding **domain‑specific semantics** became critical.
+Generic reasoning patterns were insufficient without grounding in reconciliation workflows.
+
+### Decision
+
+Before finalizing v0.5.0 semantics, the **reconciliation domain handbook was explicitly reviewed** to:
+
+*   enumerate valid workflows
+*   identify unsafe reasoning paths
+*   align semantics with real analyst behavior
+
+### Rationale
+
+*   Semantic rules must reflect **domain reality**, not generic AI intuition.
+*   Human analysts reason within workflow boundaries.
+*   Reviewing the handbook ensured semantic rules aligned with actual reconciliation practices.
+
+### Impact
+
+*   Prevented encoding non‑existent workflows.
+*   Improved intent classification fidelity.
+*   Ensured blocking rules matched real business constraints.
+
+***
+
+## **Decision 007: Divide v0.5.0 into Internal Phases (5.1–5.5)**
+
+### Context
+
+v0.5.0 introduced multiple cognitive capabilities.
+Implementing them at once would reduce observability and increase design risk.
+
+### Decision
+
+The milestone was explicitly divided into **five internal phases**, each introducing **one semantic capability only**:
+
+*   5.1 — Reasoning state
+*   5.2 — Intent awareness
+*   5.3 — Failure‑safe blocking & responsibility
+*   5.4 — Bounded continuity
+*   5.5 — Intentional forgetting & lifecycle
+
+### Rationale
+
+*   Human cognition develops incrementally.
+*   Isolating phases preserves correctness at each step.
+*   Simplifies debugging and validation.
+
+### Impact
+
+*   Each semantic rule can be validated independently.
+*   Reduced coupling between reasoning, continuity, and lifecycle.
+*   Clear audit trail of cognitive evolution.
+
+***
+
+## **Decision 008: Enforce Bounded Reasoning Instead of Open‑Ended Continuity**
+
+### Context
+
+Unbounded follow‑up reasoning leads to:
+
+*   cognitive loops
+*   speculative explanations
+*   loss of analyst‑grade discipline
+
+### Decision
+
+Reasoning continuity must be **explicitly capped** via a reasoning budget.
+Once exhausted, the system must block further reasoning and explain why.
+
+### Rationale
+
+*   Human analysts stop when inference limits are reached.
+*   Infinite reasoning reduces trust.
+*   Bounded reasoning is essential for auditability.
+
+### Impact
+
+*   Prevents runaway conversations.
+*   Makes reasoning limits transparent to users.
+*   Improves reliability under repeated follow‑ups.
+
+***
+
+## **Decision 009: Make Forgetting a First‑Class Capability**
+
+### Context
+
+Without explicit forgetting, semantic context can linger and corrupt new conversations.
+
+### Decision
+
+The system must **intentionally forget** reasoning context when:
+
+*   a reasoning session completes
+*   the reasoning budget is exhausted
+*   a new topic is introduced
+*   a terminal block occurs
+
+### Rationale
+
+*   Forgetting is a core feature of safe cognition.
+*   Implicit decay is unpredictable and unsafe.
+*   Explicit lifecycle control is inspectable and auditable.
+
+### Impact
+
+*   Prevents stale context bleed.
+*   Provides clean conversation boundaries.
+*   Makes the system predictable and trustworthy.
+
+***
+
+## **Decision 010: Complete Cognitive Discipline Before Adding Knowledge (RAG)**
+
+### Context
+
+It was tempting to introduce RAG or data access earlier.
+However, uncontrolled reasoning amplifies hallucination when combined with knowledge.
+
+### Decision
+
+All semantic reasoning controls (Phases 5.1–5.5) must be completed **before** introducing:
+
+*   document retrieval
+*   database access
+*   tool usage
+
+### Rationale
+
+*   Knowledge must sit on top of disciplined reasoning.
+*   RAG without lifecycle, blocking, and limits is unsafe.
+*   Semantic correctness precedes informational correctness.
+
+### Impact
+
+*   v0.5.0 cleanly separates *how to think* from *what to know*.
+*   Makes Phase 6 safe by design.
+
+***

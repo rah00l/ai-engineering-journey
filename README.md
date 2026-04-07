@@ -50,3 +50,12 @@ the intent, scope, and learnings of that stage.
   - Introduced explicit AI failure classification
   - Defined retry, latency, and cost boundaries
   - Designed safe fallback behavior to preserve workflow trust
+
+  - **v0.5.0 – Controlled Context & Semantic Reasoning**
+  👉 [`ruby/05-controlled-context/`](ruby/05-controlled-context/)
+  - Introduced explicit reasoning context without conversational memory
+  - Enabled intent‑aware explanations (meaning / cause / next steps)
+  - Added safe blocking, bounded follow‑ups, and intentional context reset
+  - Established human‑like conversational behavior with strict safety guarantees
+
+  
