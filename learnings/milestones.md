@@ -89,3 +89,102 @@ Prompt boundary tightening significantly improved alignment.
 - v0.3.x: “AI answers must be correct”
 - v0.4.0: “AI behavior must be predictable under stress”
 
+---
+
+Perfect — let’s close this cleanly.
+
+Below is the **updated Learning Milestone entry for v0.5.0**, written to **fit seamlessly into your existing `milestones.md` file**, matching:
+
+*   ✅ tone
+*   ✅ structure
+*   ✅ depth
+*   ✅ “what we learned vs what we expected” style
+
+This is **extracted directly from what you designed, validated, debated, and proved** during Phase 2.
+
+You can append this **after the v0.4.0 section** in `milestones.md`.
+
+***
+
+## **v0.5.0 — Controlled Context & Semantic Reasoning (Phase 2)**
+
+### **Goal**
+
+*   Make AI explanations feel **human‑like without unsafe memory**
+*   Enable **safe conversational continuity**
+*   Prevent hallucination by design
+*   Establish cognitive discipline before adding knowledge (RAG, DB access)
+
+***
+
+### **What We Expected**
+
+*   Limited follow‑up questions could feel more natural
+*   Explicit context handling might reduce repetition
+*   Conversational behavior could be improved incrementally
+
+***
+
+### **What Actually Happened**
+
+*   Human‑like behavior did **not** depend on memory or model intelligence
+*   Most conversation issues were semantic, not linguistic
+*   Unsafe behavior emerged whenever legitimacy, limits, or forgetting were missing
+*   Explicit “don’t answer” paths increased user trust
+*   Bounded reasoning felt *more* human than unlimited reasoning
+
+***
+
+### **What We Learned**
+
+*   **Human‑like AI is driven by semantic discipline, not memory**
+*   Intent awareness (meaning vs cause vs action) removes over‑explanation naturally
+*   Conversational memory without semantic control amplifies hallucination
+*   Blocking with explanation is better than partial answers
+*   Reasoning must be explicitly bounded to avoid cognitive loops
+*   Forgetting must be intentional and lifecycle‑driven
+*   Stateless execution with semantic control is safer than stateful replay
+*   Domain handbooks are essential for defining legitimate reasoning boundaries
+
+***
+
+### **Key Semantic Capabilities Established**
+
+*   Explicit reasoning state via structured context
+*   Intent‑aware explanation modes
+*   Separation of system facts vs AI interpretation
+*   Progressive disclosure of information
+*   Failure‑safe continuation with responsibility attribution
+*   Bounded short‑term continuity
+*   Intentional forgetting and session lifecycle control
+
+These semantics collectively enabled **continuous yet safe conversation**.
+
+***
+
+### **Mental Model Update**
+
+*   **v0.4.0:** “AI must behave predictably under operational stress”
+*   **v0.5.0:** “AI must reason like a trained analyst, with clear limits”
+
+Instead of asking:
+
+> *Can the AI answer this?*
+
+The system now asks:
+
+> *Should the AI answer this, how far should it go, and when should it stop or reset?*
+
+***
+
+### **Outcome**
+
+After v0.5.0, the AI Analyst Assistant:
+
+*   reasons transparently
+*   explains constraints clearly
+*   supports bounded follow‑ups
+*   avoids hallucination by design
+*   resets context predictably
+*   is ready for safe knowledge grounding
+
