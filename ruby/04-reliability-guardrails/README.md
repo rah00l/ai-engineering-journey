@@ -123,7 +123,7 @@ In all cases, the AI Analyst Assistant:
 
 Detailed test scenarios and console outputs are documented here:
 
-👉 docs/AI_ANALYST_RELIABILITY_TESTS.md
+👉 [RELIABILITY_TESTS](../../docs/AI_ANALYST_RELIABILITY_TESTS.md)
 
 ## Folder Structure
 

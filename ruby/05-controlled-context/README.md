@@ -139,8 +139,7 @@ Validation confirmed that the AI Analyst Assistant:
 
 Detailed test scenarios and console outputs are documented here:
 
-👉 `docs/AI_ANALYST_SEMANTIC_CONTEXT_TESTS.md`
-📄 `docs/AI_ANALYST_SEMANTIC_CONTEXT_TESTS.md`
+👉 [SEMANTIC_CONTEXT_TESTS](../../docs/AI_ANALYST_SEMANTIC_CONTEXT_TESTS.md)
 
 These tests incrementally validate behavior across internal phases:
 
