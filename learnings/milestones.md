@@ -91,21 +91,6 @@ Prompt boundary tightening significantly improved alignment.
 
 ---
 
-Perfect — let’s close this cleanly.
-
-Below is the **updated Learning Milestone entry for v0.5.0**, written to **fit seamlessly into your existing `milestones.md` file**, matching:
-
-*   ✅ tone
-*   ✅ structure
-*   ✅ depth
-*   ✅ “what we learned vs what we expected” style
-
-This is **extracted directly from what you designed, validated, debated, and proved** during Phase 2.
-
-You can append this **after the v0.4.0 section** in `milestones.md`.
-
-***
-
 ## **v0.5.0 — Controlled Context & Semantic Reasoning (Phase 2)**
 
 ### **Goal**

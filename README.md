@@ -15,6 +15,7 @@ The focus is on:
 
 The repository evolves by **adding new stages**, not rewriting old ones.
 
+---
 
 ## Milestones Overview
 
@@ -40,7 +41,7 @@ the intent, scope, and learnings of that stage.
   - Established stateless, rule-faithful behavior
 
 - **v0.3.1 – AI Call Boundary**  
-  👉 [`ruby/03-structured-json/`](ruby/03-structured-json-0.3.1/)
+  👉 [`ruby/03-structured-json-0.3.1/`](ruby/03-structured-json-0.3.1/)
   - Centralized all AI interactions behind a single boundary
   - Removed direct OpenAI calls from business logic
   - Prepared the system for reliability hardening
@@ -51,11 +52,9 @@ the intent, scope, and learnings of that stage.
   - Defined retry, latency, and cost boundaries
   - Designed safe fallback behavior to preserve workflow trust
 
-  - **v0.5.0 – Controlled Context & Semantic Reasoning**
+- **v0.5.0 – Controlled Context & Semantic Reasoning**
   👉 [`ruby/05-controlled-context/`](ruby/05-controlled-context/)
   - Introduced explicit reasoning context without conversational memory
   - Enabled intent‑aware explanations (meaning / cause / next steps)
   - Added safe blocking, bounded follow‑ups, and intentional context reset
   - Established human‑like conversational behavior with strict safety guarantees
-
-  
