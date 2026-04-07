@@ -64,7 +64,7 @@ def determine_blocking(context)
 end
 
 # ============================================================
-# AI boundary setup (unchanged from v0.4.x → v0.5.x)
+# AI boundary setup (unchanged v0.4.x → v0.5.x)
 # ============================================================
 api_key = ENV["OPENAI_API_KEY"]
 model   = ENV.fetch("OPENAI_MODEL", "gpt-4o-mini")
@@ -75,7 +75,7 @@ ai = AiCallBoundary.new(
 )
 
 # ============================================================
-# Base system prompt (authoritative)
+# Base system prompt
 # ============================================================
 BASE_SYSTEM_PROMPT = <<~PROMPT
   You are an AI analyst assistant for a payment reconciliation system.
@@ -87,20 +87,17 @@ PROMPT
 INITIAL_REASONING_BUDGET = 2
 
 # ============================================================
-# Phase 5.4 — Session‑Scoped Continuity State
-# These MUST NOT reset per question
+# Phase 5.5 — Session Lifecycle State
 # ============================================================
-reasoning_budget = {
-  turns_remaining: INITIAL_REASONING_BUDGET
-}
-
-last_status  = nil
-last_subject = nil
+lifecycle_state  = :ACTIVE
+reasoning_budget = { turns_remaining: INITIAL_REASONING_BUDGET }
+last_status      = nil
+last_subject     = nil
 
 puts "Enter your question (or type 'exit'):"
 
 # ============================================================
-# Console Interaction Loop (User Session)
+# Console Interaction Loop (Single User Session)
 # ============================================================
 while (input = STDIN.gets&.strip)
   break if input.downcase == "exit"
@@ -111,22 +108,33 @@ while (input = STDIN.gets&.strip)
   attempt = 0
   failure = nil
 
-  # ========================================================
+  # ==========================================================
+  # Phase 5.5 — Intentional Forgetting
+  # Reset semantic context when lifecycle is not ACTIVE
+  # ==========================================================
+  if lifecycle_state != :ACTIVE
+    reasoning_budget = { turns_remaining: INITIAL_REASONING_BUDGET }
+    last_status      = nil
+    last_subject     = nil
+    lifecycle_state  = :ACTIVE
+  end
+
+  # ==========================================================
   # Retry Loop
-  # ========================================================
+  # ==========================================================
   loop do
     begin
       CostGuard.record!
 
-      # ----------------------------
+      # ------------------------------------------------------
       # Phase 5.2 — Intent inference
-      # ----------------------------
+      # ------------------------------------------------------
       focus = infer_focus(input)
 
-      # ----------------------------
+      # ------------------------------------------------------
       # Phase 5.4 — Continuity Binding
-      # Allows ONE follow‑up "why" using last_status
-      # ----------------------------
+      # Allows ONE contextual "why"
+      # ------------------------------------------------------
       file_state =
         if focus == :error_meaning && last_status
           { status: last_status, status_category: "ERROR" }
@@ -134,15 +142,17 @@ while (input = STDIN.gets&.strip)
           { status: "MAPPING_ERROR", status_category: "ERROR" }
         end
 
-      # ----------------------------
-      # Phase 5.4 — Reasoning Budget Check
-      # ----------------------------
+      # ------------------------------------------------------
+      # Phase 5.4 — Reasoning Budget Enforcement
+      # ------------------------------------------------------
       if reasoning_budget[:turns_remaining] <= 0
+        lifecycle_state = :EXHAUSTED
+
         response = {
           status: "BLOCKED",
           reason: :REASONING_BUDGET_EXHAUSTED,
           responsibility: :USER,
-          message: "Further reasoning requires restarting the analysis or providing more context."
+          message: "This discussion has reached its reasoning limit. Please start a new analysis."
         }
 
         puts JSON.pretty_generate(
@@ -151,22 +161,22 @@ while (input = STDIN.gets&.strip)
         break
       end
 
-      # ----------------------------
-      # Phase 5.2 — Base Context
-      # ----------------------------
+      # ------------------------------------------------------
+      # Build base AnalysisContext
+      # ------------------------------------------------------
       base_context = AnalysisContext.new(
         session_id: SecureRandom.uuid,
         subject: { type: "payment_file", id: "PF-123" }, # placeholder
         file_state: file_state,
         current_focus: focus,
         reasoning_budget: reasoning_budget,
-        lifecycle: { created_at: Time.now },
+        lifecycle: { state: lifecycle_state, created_at: Time.now },
         blocking_condition: nil
       )
 
-      # ----------------------------
+      # ------------------------------------------------------
       # Phase 5.3 — Blocking Decision
-      # ----------------------------
+      # ------------------------------------------------------
       blocking = determine_blocking(base_context)
 
       context = AnalysisContext.new(
@@ -179,22 +189,17 @@ while (input = STDIN.gets&.strip)
         blocking_condition: blocking
       )
 
-      # ----------------------------
-      # Phase 5.3 — Blocked Response Path
-      # ----------------------------
+      # ------------------------------------------------------
+      # Phase 5.3 — Blocked Response (Terminal)
+      # ------------------------------------------------------
       if context.blocking_condition[:is_blocked]
+        lifecycle_state = :COMPLETED
+
         response = {
           status: "BLOCKED",
           reason: context.blocking_condition[:reason],
           responsibility: context.blocking_condition[:responsibility],
-          message: case context.blocking_condition[:responsibility]
-                   when :USER
-                     "More details are required to answer this question."
-                   when :SYSTEM
-                     "The system has not completed processing yet."
-                   else
-                     "This request is currently blocked."
-                   end
+          message: "This line of inquiry cannot continue further."
         }
 
         puts JSON.pretty_generate(
@@ -203,10 +208,10 @@ while (input = STDIN.gets&.strip)
         break
       end
 
-      # ----------------------------
+      # ------------------------------------------------------
       # Phase 5.2 — Focused System Prompt
-      # IMPORTANT: JSON instruction MUST be last
-      # ----------------------------
+      # JSON instruction MUST be last
+      # ------------------------------------------------------
       system_prompt =
         case focus
         when :status_meaning
@@ -234,21 +239,25 @@ while (input = STDIN.gets&.strip)
           PROMPT
         end
 
-      # ----------------------------
-      # AI Call (Boundary Remains Unchanged)
-      # ----------------------------
+      # ------------------------------------------------------
+      # AI Call (Boundary unchanged)
+      # ------------------------------------------------------
       result = ai.explain(
         system_prompt: system_prompt,
         user_prompt: input
       )
 
-      # ----------------------------
-      # Phase 5.4 — Commit Continuity
-      # These MUST happen AFTER a successful explanation
-      # ----------------------------
+      # ------------------------------------------------------
+      # Phase 5.4 — Commit Continuity & Budget
+      # ------------------------------------------------------
       reasoning_budget[:turns_remaining] -= 1
       last_status  = context.file_state[:status]
       last_subject = context.subject
+
+      # ------------------------------------------------------
+      # Phase 5.5 — Optional lifecycle closure on action guidance
+      # ------------------------------------------------------
+      lifecycle_state = :COMPLETED if focus == :next_action
 
       puts JSON.pretty_generate(
         TrustContract.success(result)
@@ -270,7 +279,9 @@ while (input = STDIN.gets&.strip)
   # Terminal Failure Handling
   # ==========================================================
   if failure
+    lifecycle_state = :COMPLETED
     fallback = SafetyFallback.build(failure)
+
     puts JSON.pretty_generate(
       TrustContract.failure(fallback)
     )
