@@ -1,0 +1,5 @@
+services:
+  v0_6_ai_knowledge_registry:
+    build: .
+    env_file:
+      - .env

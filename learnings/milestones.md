@@ -173,3 +173,67 @@ After v0.5.0, the AI Analyst Assistant:
 *   resets context predictably
 *   is ready for safe knowledge grounding
 
+***
+
+## **v0.6.0 — Knowledge Source Registration (Phase 3)**
+
+### **Goal**
+
+*   Make **knowledge explicit and governed**
+*   Remove implicit assumptions about documentation
+*   Prepare for safe knowledge grounding (RAG) without changing behavior
+
+***
+
+### **What We Learned**
+
+*   Knowledge must be **declared before it can be used**
+*   Document existence, authority, and scope matter more than content
+*   Not every question should consult documentation
+*   Explicit governance simplifies future retrieval decisions
+*   Zero‑behavior‑change milestones can be structurally critical
+
+***
+
+### **Key Capability Added**
+
+*   Central **Knowledge Registry**
+*   Knowledge sources modeled as metadata only:
+    *   authority
+    *   domain
+    *   version
+    *   stable source pointer
+*   Read‑only, explanation‑only usage guarantee
+
+(No retrieval, no RAG, no response changes.)
+
+***
+
+### **Mental Model Update**
+
+*   **v0.5.0:** How the AI reasons
+*   **v0.6.0:** What knowledge exists
+
+Instead of guessing:
+
+> “Should the AI look this up?”
+
+The system now knows:
+
+> “Does authoritative knowledge even exist for this?”
+
+***
+
+### **Outcome**
+
+After v0.6.0, the AI Analyst Assistant:
+
+*   preserves all Phase 2 reasoning guarantees
+*   has explicit awareness of authoritative documentation
+*   avoids implicit or assumed knowledge
+*   is ready for retrieval discipline in v0.6.1
+
+✅ **Status:** Locked
+➡️ **Next:** v0.6.1 — Retrieval Legitimacy & Discipline
+
+***

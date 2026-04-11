@@ -250,3 +250,28 @@ All semantic reasoning controls (Phases 5.1–5.5) must be completed **before** 
 *   Makes Phase 6 safe by design.
 
 ***
+
+#### Decision 011: Introduce Knowledge Governance Before Retrieval
+
+**Context**  
+As the system evolves toward knowledge grounding (RAG), we intentionally separated:
+
+*   knowledge existence
+*   knowledge access
+*   knowledge usage
+
+to avoid unsafe or ungoverned retrieval.
+
+**Decision**  
+We introduced a dedicated knowledge registry (v0.6.0) that:
+
+*   explicitly declares authoritative knowledge sources
+*   records domain, authority, and version
+*   stores only metadata and stable pointers
+*   does not retrieve or store document content
+
+**Consequences**
+
+*   RAG cannot be enabled without governance
+*   Absence of documentation becomes an explicit, safe outcome
+*   Future retrieval and grounding remain auditable and bounded

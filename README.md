@@ -58,3 +58,13 @@ the intent, scope, and learnings of that stage.
   - Enabled intent‑aware explanations (meaning / cause / next steps)
   - Added safe blocking, bounded follow‑ups, and intentional context reset
   - Established human‑like conversational behavior with strict safety guarantees
+
+- **v0.6.0 – Knowledge Source Registration**
+  👉 [`ruby/06-knowledge-registry/`](ruby/06-knowledge-registry/)
+  - Introduced explicit registration of authoritative knowledge sources
+  - Made knowledge existence, scope, authority, and version auditable
+  - Separated knowledge awareness from retrieval and reasoning
+  - Added governance foundation for safe knowledge grounding (RAG)
+  - Preserved all v0.5.0 reasoning behavior with zero response changes
+
+  
