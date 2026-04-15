@@ -275,3 +275,50 @@ We introduced a dedicated knowledge registry (v0.6.0) that:
 *   RAG cannot be enabled without governance
 *   Absence of documentation becomes an explicit, safe outcome
 *   Future retrieval and grounding remain auditable and bounded
+
+
+### **Decision 012: Treat “NOT\_DEFINED” as a Valid, First‑Class Outcome**
+
+This decision captures a behavior you have already implemented and validated.
+
+***
+
+### **Decision 012: Explicitly Return NOT\_DEFINED When Documentation Is Allowed but Content Is Absent**
+
+#### Context
+
+Once knowledge eligibility is introduced (v0.6.1), situations arise where:
+
+*   documentation access is **legitimate**
+*   but the documentation **does not define the requested concept**
+
+Without an explicit rule, systems often:
+
+*   hallucinate
+*   fall back to general knowledge
+*   blur the boundary between authority and inference
+
+#### Decision
+
+When documentation access is allowed **but no authoritative content is found**, the system must:
+
+*   explicitly return **NOT\_DEFINED**
+*   avoid fallback to model knowledge
+*   preserve trust by refusing to guess
+
+#### Rationale
+
+*   Absence of documentation is meaningful information
+*   “I don’t know” is safer than incorrect authority
+*   Explicit refusal maintains auditability and trust
+*   This behavior allows execution (v0.7.x) to fail safely
+
+#### Impact
+
+*   v0.6.1 produces honest, predictable outcomes
+*   v0.7.x execution is bounded and safe
+*   The system distinguishes:
+    *   *not allowed*
+    *   *allowed but missing*
+    *   *allowed and grounded*
+

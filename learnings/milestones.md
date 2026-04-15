@@ -237,3 +237,82 @@ After v0.6.0, the AI Analyst Assistant:
 ➡️ **Next:** v0.6.1 — Retrieval Legitimacy & Discipline
 
 ***
+
+Perfect — thanks for sharing the **v0.6.0 milestone “log” section**.  
+I understand exactly what you want now:
+
+✅ You want an **equivalent, disciplined “closure section” for v0.6.1**,  
+✅ written in the **same tone, structure, and maturity**,  
+✅ suitable to **lock the milestone officially**,  
+✅ and ready to drop into the README or changelog without further debate.
+
+Below is the **v0.6.1 counterpart**, aligned line‑by‑line with the v0.6.0 style you posted.
+
+***
+
+## **v0.6.1 — Retrieval Legitimacy & Discipline (Phase 3)**
+
+### **Goal**
+
+*   Introduce **explicit discipline around knowledge usage**
+*   Prevent unsafe or implicit document consultation
+*   Decide **when documentation is allowed**, without executing retrieval
+*   Prepare the system for grounded explanations without changing AI behavior
+
+***
+
+### **What We Learned**
+
+*   Knowledge presence alone is **not sufficient** to consult documentation
+*   Every retrieval must be **explicitly justified**
+*   Intent must be **normalized and evaluated**, not assumed
+*   Authority and coverage checks prevent accidental misuse of documents
+*   Safe AI systems must distinguish **permission** from **execution**
+*   Correct behavior sometimes means returning **NOT\_DEFINED**
+
+***
+
+### **Key Capability Added**
+
+*   **Knowledge Eligibility Gate** with deterministic outcomes
+*   Explicit **intent normalization** between conversational semantics and governance semantics
+*   Auditable **ALLOW / DENY** decisions with clear reasons
+*   Authority sufficiency and coverage validation
+*   Runtime enforcement of documentation discipline
+
+(No document access, no PDF parsing, no RAG execution.)
+
+***
+
+### **Mental Model Update**
+
+*   **v0.5.0:** How the AI reasons
+*   **v0.6.0:** What knowledge exists
+*   **v0.6.1:** **When knowledge may be used**
+
+Instead of the system guessing:
+
+> “Should I look this up?”
+
+The system now decides deliberately:
+
+> “Am I allowed to consult documentation at all?”
+
+***
+
+### **Outcome**
+
+After v0.6.1, the AI Analyst Assistant:
+
+*   makes **explicit, auditable decisions** about documentation usage
+*   prevents opportunistic or accidental RAG behavior
+*   preserves all Phase 2 reasoning guarantees
+*   returns safe, honest responses when documentation is unavailable
+*   cleanly separates **permission** from **execution**
+*   establishes a stable boundary for grounded explanations in v0.7.x
+
+✅ **Status:** Locked  
+➡️ **Next:** v0.7.0 — Grounded Explanations & Document Adapter
+
+***
+

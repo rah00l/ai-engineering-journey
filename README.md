@@ -63,8 +63,14 @@ the intent, scope, and learnings of that stage.
   👉 [`ruby/06-knowledge-registry/`](ruby/06-knowledge-registry/)
   - Introduced explicit registration of authoritative knowledge sources
   - Made knowledge existence, scope, authority, and version auditable
-  - Separated knowledge awareness from retrieval and reasoning
-  - Added governance foundation for safe knowledge grounding (RAG)
+  - Separated knowledge definition from reasoning and retrieval
+  - Established governance foundation for controlled knowledge grounding
   - Preserved all v0.5.0 reasoning behavior with zero response changes
 
-  
+- **v0.6.1 – Retrieval Legitimacy & Discipline**
+  👉 [`ruby/06-knowledge-grounding/`](ruby/06-knowledge-grounding/)
+  - Introduced an explicit eligibility gate to decide when documentation may be consulted
+  - Enforced intent‑aware and authority‑aware permission checks for knowledge usage
+  - Made documentation access an explicit ALLOW / DENY decision with auditable reasons
+  - Clearly separated knowledge existence (v0.6.0) from knowledge execution (v0.7.0)
+  - Preserved all existing reasoning and response behavior with zero runtime changes

@@ -1,0 +1,5 @@
+services:
+  v0_6_0_ai_knowledge_grounding:
+    build: .
+    env_file:
+      - .env
