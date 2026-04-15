@@ -322,3 +322,38 @@ When documentation access is allowed **but no authoritative content is found**, 
     *   *allowed but missing*
     *   *allowed and grounded*
 
+### **Decision 013: Introduce an Explicit Knowledge Execution Boundary**
+
+#### Context
+
+After establishing knowledge governance (v0.6.0) and eligibility discipline (v0.6.1),
+we needed a concrete way to **execute approved knowledge access** safely.
+
+Without an explicit execution boundary, document grounding would:
+- blur decision and execution responsibilities
+- make failure modes ambiguous
+- risk accidental retrieval or hallucination
+
+#### Decision
+
+We introduced a dedicated **execution layer** (v0.7.0) consisting of:
+
+- a stable `DocumentAdapter` contract
+- a concrete execution strategy (`PdfDocumentAdapter`)
+- deterministic failure semantics (`nil → NOT_DEFINED`)
+
+Execution is attempted **only after eligibility is approved** and may fail safely without fallback.
+
+#### Rationale
+
+- Execution is the highest‑risk stage of RAG systems
+- Safe execution requires structure before intelligence
+- Explicit failure is preferable to inferred authority
+- Separating execution enables auditable, incremental evolution
+
+#### Impact
+
+- v0.7.0 makes knowledge execution a real, testable subsystem
+- Document access remains controlled and honest
+- Future execution enhancements (v0.7.1+) occur without reopening eligibility or reasoning logic
+

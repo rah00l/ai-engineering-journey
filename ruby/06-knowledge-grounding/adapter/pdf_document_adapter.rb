@@ -1,58 +1,40 @@
 # frozen_string_literal: true
 
 require_relative "document_adapter"
-require "open3"
 
-# PdfDocumentAdapter reads approved sections from a PDF file.
+# PdfDocumentAdapter
 #
-# This implementation is deliberately conservative:
-# - Uses external pdftotext
-# - Extracts text deterministically
-# - Performs simple section slicing
+# Concrete execution adapter for PDF-based documentation.
+#
+# v0.7.0 responsibility:
+# - Exist as a concrete adapter implementation
+# - Be invoked when knowledge usage is permitted
+# - Return a deterministic execution result
+#
+# IMPORTANT:
+# - This version DOES NOT read files
+# - This version DOES NOT parse PDFs
+# - Returning nil is a valid and expected outcome
+#
+# Later milestones will extend this adapter incrementally:
+# - v0.7.1: Source pointer resolution (file existence)
+# - v0.7.2: Section identification (definitions, policies)
+# - v0.7.3: Term-level grounded extraction
 #
 # Phase: v0.7.0
+# Responsibility: Execution plumbing only
 class PdfDocumentAdapter < DocumentAdapter
-  SECTION_HEADERS = {
-    definitions: /definitions/i,
-    policy: /policy|rules/i,
-    status_codes: /status codes?/i
-  }
-
+  # Attempts to fetch an approved document section.
+  #
+  # @param source_pointer [String] Stable reference to the document
+  # @param section [Symbol] Logical section (e.g. :definitions)
+  # @param version [String] Document version identifier
+  #
+  # @return [String, nil]
+  #   nil indicates that no authoritative content is available
   def fetch_section(source_pointer:, section:, version:)
-    pdf_path = resolve_pdf(source_pointer, version)
-    return nil unless File.exist?(pdf_path)
-
-    text = extract_text(pdf_path)
-    extract_section(text, section)
-  end
-
-  private
-
-  def resolve_pdf(source_pointer, version)
-    # Example: map pointer → file location
-    # You can later replace this with config or registry lookup
-    "docs/#{source_pointer}-#{version}.pdf"
-  end
-
-  def extract_text(pdf_path)
-    stdout, _stderr, _status =
-      Open3.capture3("pdftotext", pdf_path, "-")
-
-    stdout
-  rescue
+    # v0.7.0 intentionally performs no document access.
+    # This validates execution wiring without enabling retrieval.
     nil
-  end
-
-  def extract_section(text, section)
-    return nil if text.nil?
-
-    header = SECTION_HEADERS[section]
-    return nil unless header
-
-    sections = text.split(/\n{2,}/)
-
-    matched = sections.find { |block| block.match?(header) }
-
-    matched&.strip
   end
 end

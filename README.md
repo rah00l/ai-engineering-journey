@@ -74,3 +74,11 @@ the intent, scope, and learnings of that stage.
   - Made documentation access an explicit ALLOW / DENY decision with auditable reasons
   - Clearly separated knowledge existence (v0.6.0) from knowledge execution (v0.7.0)
   - Preserved all existing reasoning and response behavior with zero runtime changes
+
+- **v0.7.0 – Knowledge Execution Skeleton**
+  👉 [`ruby/06-knowledge-grounding/adapter/`](ruby/06-knowledge-grounding/adapter/)
+  - Introduced an explicit execution boundary for knowledge usage
+  - Defined a stable document adapter contract
+  - Added deterministic execution failure handling (`NOT_DEFINED`)
+  - Confirmed safe execution routing after eligibility approval
+  - Preserved all v0.6.x reasoning and governance guarantees

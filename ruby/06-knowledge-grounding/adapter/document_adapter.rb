@@ -1,22 +1,25 @@
 # frozen_string_literal: true
 
-# DocumentAdapter defines the contract for all document access.
+# DocumentAdapter
 #
-# This interface is intentionally minimal and deterministic.
-# All implementations must:
-#  - Fetch only approved sections
-#  - Return plain text or nil
-#  - Never infer relevance
-#  - Never cache or persist content
+# Defines the execution contract for accessing authoritative documentation.
+#
+# This class represents an abstract execution boundary.
+# It does NOT perform retrieval, parsing, or validation.
 #
 # Phase: v0.7.0
+# Responsibility: Define the execution interface only
 class DocumentAdapter
-  # @param source_pointer [String]
-  # @param section [Symbol]
-  # @param version [String]
+  # Attempts to fetch an approved section from a document.
+  #
+  # @param source_pointer [String] Stable reference to the document source
+  # @param section [Symbol] Logical section identifier (e.g. :definitions)
+  # @param version [String] Document version identifier
   #
   # @return [String, nil]
+  #   String → authoritative content found (future milestones)
+  #   nil    → content not available (valid outcome)
   def fetch_section(source_pointer:, section:, version:)
-    raise NotImplementedError, "Implement in subclass"
+    raise NotImplementedError, "Subclasses must implement fetch_section"
   end
 end

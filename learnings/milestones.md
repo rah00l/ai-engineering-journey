@@ -316,3 +316,63 @@ After v0.6.1, the AI Analyst Assistant:
 
 ***
 
+## **v0.7.0 — Knowledge Execution Skeleton (Phase 3)**
+
+### **Goal**
+
+*   Introduce a concrete execution boundary for knowledge usage
+*   Prove that document grounding can be attempted safely
+*   Preserve all prior reasoning and eligibility guarantees
+
+***
+
+### **What We Learned**
+
+*   Execution must be separated from permission
+*   Safe systems must fail explicitly before succeeding accurately
+*   Returning `NOT_DEFINED` is a successful execution outcome
+*   Execution plumbing should be validated before document logic is added
+
+***
+
+### **Key Capability Added**
+
+*   Stable **DocumentAdapter** execution contract
+*   Concrete **PdfDocumentAdapter** execution strategy (stub)
+*   Grounded execution routing after eligibility approval
+*   Deterministic execution failure semantics (`nil → NOT_DEFINED`)
+
+(No document access, no file parsing, no grounding logic.)
+
+***
+
+### **Mental Model Update**
+
+*   **v0.6.1:** When knowledge may be used  
+*   **v0.7.0:** **How knowledge execution is attempted**
+
+Instead of imagining execution:
+
+> “We could read a document here…”
+
+The system now executes concretely:
+
+> “Attempt execution; fail safely if nothing is defined.”
+
+***
+
+### **Outcome**
+
+After v0.7.0, the AI Analyst Assistant:
+
+*   has a real, testable knowledge execution path
+*   attempts document grounding only after explicit approval
+*   returns honest, non‑hallucinated outcomes when content is absent
+*   preserves trust and auditability across execution failures
+*   is ready for incremental execution enhancements in v0.7.1+
+
+✅ **Status:** Locked  
+➡️ **Next:** v0.7.1 — Source Pointer Resolution
+
+***
+
