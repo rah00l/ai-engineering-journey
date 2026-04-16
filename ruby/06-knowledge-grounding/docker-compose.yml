@@ -3,3 +3,7 @@ services:
     build: .
     env_file:
       - .env
+    volumes:
+      - ../../docs:/docs
+    stdin_open: true
+    tty: true

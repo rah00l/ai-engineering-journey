@@ -33,8 +33,22 @@ class PdfDocumentAdapter < DocumentAdapter
   # @return [String, nil]
   #   nil indicates that no authoritative content is available
   def fetch_section(source_pointer:, section:, version:)
+    document_path = resolve_source_pointer(source_pointer, version)
+
+    return nil unless File.exist?(document_path)
+
     # v0.7.0 intentionally performs no document access.
     # This validates execution wiring without enabling retrieval.
     nil
+  end
+
+  private
+  # Resolves a stable document identifier into a concrete file path.
+  #
+  # NOTE:
+  # - Resolution logic is deterministic
+  # - No file parsing occurs here
+  def resolve_source_pointer(source_pointer, version)
+    File.join(File::SEPARATOR, "docs", "#{source_pointer}-#{version}.pdf")
   end
 end

@@ -82,3 +82,12 @@ the intent, scope, and learnings of that stage.
   - Added deterministic execution failure handling (`NOT_DEFINED`)
   - Confirmed safe execution routing after eligibility approval
   - Preserved all v0.6.x reasoning and governance guarantees
+
+- **v0.7.1 – Source Pointer Resolution**
+  👉 [`ruby/06-knowledge-grounding/adapter/`](ruby/06-knowledge-grounding/adapter/)
+  - Introduced deterministic resolution of document source pointers
+  - Validated knowledge source existence at runtime
+  - Made infrastructure availability an explicit execution step
+  - Preserved safe failure semantics (`NOT_DEFINED`)
+  - Maintained strict separation from document parsing and grounding logic
+    

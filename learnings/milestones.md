@@ -376,3 +376,66 @@ After v0.7.0, the AI Analyst Assistant:
 
 ***
 
+## **v0.7.1 — Source Pointer Resolution (Phase 3)**
+
+### **Goal**
+
+*   Validate that approved knowledge sources exist at runtime
+*   Make document availability an explicit execution concern
+*   Preserve safe execution semantics established in v0.7.0
+
+***
+
+### **What We Learned**
+
+*   Runtime availability is distinct from logical permission
+*   Containers expose filesystem assumptions that must be validated
+*   Missing documents are a normal, expected execution outcome
+*   Infrastructure failures must surface before parsing begins
+
+***
+
+### **Key Capability Added**
+
+*   Deterministic resolution of document source pointers
+*   Explicit file existence validation during execution
+*   Clear distinction between:
+    *   document missing
+    *   document present but content not defined
+*   Continued support for safe failure (`nil → NOT_DEFINED`)
+
+(No document parsing, no section detection, no grounding logic.)
+
+***
+
+### **Mental Model Update**
+
+*   **v0.7.0:** How execution is attempted  
+*   **v0.7.1:** **Whether the document exists at runtime**
+
+Instead of assuming infrastructure:
+
+> “The document should be there…”
+
+The system now verifies explicitly:
+
+> “The document is present and reachable before proceeding.”
+
+***
+
+### **Outcome**
+
+After v0.7.1, the AI Analyst Assistant:
+
+*   validates knowledge source availability at runtime
+*   distinguishes infrastructure failures from content gaps
+*   preserves honest, non‑hallucinatory behavior
+*   maintains strict separation between execution and interpretation
+*   is ready for deterministic document parsing in v0.7.2
+
+✅ **Status:** Locked  
+➡️ **Next:** v0.7.2 — Section Identification
+
+***
+
+

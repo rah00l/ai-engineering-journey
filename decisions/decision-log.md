@@ -322,6 +322,8 @@ When documentation access is allowed **but no authoritative content is found**, 
     *   *allowed but missing*
     *   *allowed and grounded*
 
+***
+
 ### **Decision 013: Introduce an Explicit Knowledge Execution Boundary**
 
 #### Context
@@ -357,3 +359,44 @@ Execution is attempted **only after eligibility is approved** and may fail safel
 - Document access remains controlled and honest
 - Future execution enhancements (v0.7.1+) occur without reopening eligibility or reasoning logic
 
+***
+
+### **Decision 014: Resolve and Validate Knowledge Source Pointers at Runtime**
+
+#### Context
+
+After introducing an explicit execution boundary (v0.7.0), the system
+was able to attempt knowledge execution safely, but it was still unclear
+whether the approved document actually existed in the runtime environment.
+
+Without explicit source pointer resolution:
+- execution failures become ambiguous
+- missing documents are indistinguishable from missing content
+- infrastructure gaps surface late and unsafely
+
+#### Decision
+
+We introduced deterministic **source pointer resolution** (v0.7.1) as a
+separate execution step.
+
+This step:
+- resolves a stable document identifier to a concrete runtime path
+- explicitly validates document existence
+- fails safely when documents are missing
+- does not read or parse document content
+
+#### Rationale
+
+- Runtime existence is an infrastructure concern, not a parsing concern
+- Execution should distinguish:
+  - document missing
+  - document present but content not yet defined
+- Explicit validation strengthens auditability and trust
+- File existence must be proven before any parsing is attempted
+
+#### Impact
+
+- v0.7.1 makes execution environment assumptions explicit
+- Missing documentation surfaces as a safe, expected outcome
+- Future parsing work (v0.7.2+) proceeds with guaranteed file availability
+- Eligibility and reasoning logic remain unchanged

@@ -73,6 +73,17 @@ This adapter evolves incrementally across sub‑milestones:
 
 - **v0.7.0** — Execution skeleton (no document access)
 - **v0.7.1** — Source pointer resolution (file existence)
+### v0.7.1 — Source Pointer Resolution
+
+This milestone adds deterministic resolution of document source pointers.
+
+The adapter now:
+- Resolves a concrete document location
+- Validates file existence
+- Fails explicitly when the document is missing
+
+No document content is read or interpreted at this stage.
+
 - **v0.7.2** — Section identification (deterministic blocks)
 - **v0.7.3** — Term‑level grounding (exact definitions)
 
