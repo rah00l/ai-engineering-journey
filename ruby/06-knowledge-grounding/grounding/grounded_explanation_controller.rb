@@ -15,31 +15,40 @@ class GroundedExplanationController
     @ai = ai
   end
 
-  def explain(context:, eligibility:, source:, section:, version:, system_prompt:, user_prompt:)
-    return explain_without_docs(system_prompt, user_prompt) unless eligibility.allowed?
-
-    content =
+  # v0.7.3:
+  # ----------
+  # term must be provided explicitly.
+  #
+  def explain(context:, eligibility:, source:, section:, version:, term:, system_prompt:, user_prompt:)
+    definition =
       @document_adapter.fetch_section(
         source_pointer: source,
         section: section,
-        version: version
+        version: version,
+        term: term
       )
 
-    return not_defined_response unless content
+    unless definition
+      return {
+        status: "NOT_DEFINED",
+        message: "This information is not defined in the authoritative documentation."
+      }
+    end
 
-    grounded_prompt = <<~PROMPT
-      #{system_prompt}
+    constrained_prompt = <<~PROMPT
+      AUTHORITATIVE DEFINITION
+      (Source: #{source} #{version}, Section: #{section.to_s.upcase})
 
-      Use ONLY the following authoritative excerpt.
-      Do not add assumptions or external knowledge.
+      #{term}
+      #{definition}
 
-      ---
-      #{content}
-      ---
+      INSTRUCTION:
+      Answer using ONLY the definition above.
+      Do not add interpretations, actions, or external knowledge.
     PROMPT
 
     @ai.explain(
-      system_prompt: grounded_prompt,
+      system_prompt: system_prompt + "\n" + constrained_prompt,
       user_prompt: user_prompt
     )
   end

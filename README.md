@@ -90,4 +90,14 @@ the intent, scope, and learnings of that stage.
   - Made infrastructure availability an explicit execution step
   - Preserved safe failure semantics (`NOT_DEFINED`)
   - Maintained strict separation from document parsing and grounding logic
-    
+
+- **v0.7.2 – Section Identification**
+  👉 [`ruby/06-knowledge-grounding/adapter/`](ruby/06-knowledge-grounding/adapter/)
+  - Introduced deterministic section‑level grounding within authoritative documents
+  - Converted PDF documents into plain text safely at execution time
+  - Identified *where* authoritative knowledge lives using structural headers (e.g. DEFINITIONS)
+  - Established explicit section boundaries before any semantic interpretation
+  - Preserved safe failure semantics (`NOT_DEFINED`) when structure is absent
+
+  
+

@@ -71,6 +71,13 @@ def determine_blocking(context)
   blocking
 end
 
+def extract_term_from_user_input(user_input)
+  match = user_input.match(/what does\s+(.+?)\s+mean\?/i)
+  return nil unless match
+
+  match[1].strip.upcase
+end
+
 # ============================================================
 # AI boundary setup (unchanged v0.4.x → v0.5.x)
 # ============================================================
@@ -250,12 +257,17 @@ while (input = STDIN.gets&.strip)
       result =
         if eligibility.allowed?
 
+          term = extract_term_from_user_input(input)
+
+          return not_defined unless term
+
           grounded_controller.explain(
             context: context,
             eligibility: eligibility,
             source: "RECONCILIATION_HANDBOOK",
             section: :definitions,
             version: "v2.1",
+            term: term,
             system_prompt: system_prompt,
             user_prompt: input
           )

@@ -400,3 +400,62 @@ This step:
 - Missing documentation surfaces as a safe, expected outcome
 - Future parsing work (v0.7.2+) proceeds with guaranteed file availability
 - Eligibility and reasoning logic remain unchanged
+
+***
+
+### **Decision 015: Introduce Section‑Level Grounding Before Term‑Level Interpretation**
+
+#### Context
+
+After validating document existence at runtime (v0.7.1), the system
+could confirm that authoritative documentation was available.
+However, extracting meaning directly from full documents risked:
+* ambiguity
+* accidental relevance assumptions
+* unsafe keyword‑based matching
+* silent hallucination
+
+A deliberate intermediate step was required.
+
+#### Decision
+
+We introduced **explicit section‑level grounding** (v0.7.2) as a
+mandatory execution step before any semantic interpretation.
+
+Under this decision:
+* The system must identify *where* knowledge lives structurally
+* Semantic extraction is prohibited without a validated section
+* Section boundaries are determined via explicit, human‑authored headers
+
+#### Rationale
+
+* Documents encode authority through structure, not keyword proximity
+* Sections represent intentional scoping by the document author
+* Separating structure from semantics improves auditability
+* Large intermediate artifacts are acceptable when they preserve truth
+* Refusing to guess is safer than partially extracting meaning
+
+#### Observed Effects
+
+During implementation, v0.7.2 surfaced:
+* entire operational tables and explanatory content
+* unexpected formatting from PDF conversion
+* the necessity of handling noisy but deterministic text streams
+
+These outcomes validated the need for:
+* strict structure detection
+* deferred semantic interpretation
+* a dedicated term‑level grounding milestone (v0.7.3)
+
+#### Impact
+
+* Structural grounding became a first‑class execution concern
+* Semantic grounding could be introduced safely and precisely later
+* The system gained a clear, explainable grounding pipeline
+* Phase 3 execution guarantees remained intact
+
+This decision closed the structural gap between
+document existence and semantic meaning.
+
+***
+

@@ -24,6 +24,25 @@ require_relative "document_adapter"
 # Phase: v0.7.0
 # Responsibility: Execution plumbing only
 class PdfDocumentAdapter < DocumentAdapter
+  # Explicitly declared section headers.
+  # These represent the authoritative structure authored by humans.
+
+  # ============================================================
+   # v0.7.2 — SECTION IDENTIFICATION
+   # ============================================================
+   # Explicitly declared section headers.
+   # These represent the authoritative structure authored by humans.
+   #
+   # NOTE:
+   # - This is where v0.7.2 officially begins
+   # - Structure is introduced BEFORE semantics
+  SECTION_HEADERS = {
+    definitions: /^(definitions|definition)\b/i,
+    status_codes: /^(status codes?)\b/i,
+    policies: /^(policy|policies|rules)\b/i
+  }.freeze
+
+
   # Attempts to fetch an approved document section.
   #
   # @param source_pointer [String] Stable reference to the document
@@ -32,14 +51,26 @@ class PdfDocumentAdapter < DocumentAdapter
   #
   # @return [String, nil]
   #   nil indicates that no authoritative content is available
+
+
+  # Main execution entrypoint.
+  #
+  # Returns:
+  #   - Full raw section text if the section can be identified
+  #   - nil if the document exists but the section cannot be found
   def fetch_section(source_pointer:, section:, version:)
     document_path = resolve_source_pointer(source_pointer, version)
-
     return nil unless File.exist?(document_path)
 
-    # v0.7.0 intentionally performs no document access.
-    # This validates execution wiring without enabling retrieval.
-    nil
+    # ------------------------------------------------------------
+    # v0.7.2 — PDF → TEXT CONVERSION
+    # ------------------------------------------------------------
+    text = extract_text(document_path)
+    return nil unless text
+
+    # v0.7.2 — SECTION BOUNDARY EXTRACTION
+    section_text = extract_section(text, section)
+    return nil unless section_text
   end
 
   private
@@ -50,5 +81,55 @@ class PdfDocumentAdapter < DocumentAdapter
   # - No file parsing occurs here
   def resolve_source_pointer(source_pointer, version)
     File.join(File::SEPARATOR, "docs", "#{source_pointer}-#{version}.pdf")
+  end
+
+
+# Converts a PDF document into plain text deterministically.
+  #
+  # Uses an external tool (pdftotext) and returns the raw text output.
+  # No interpretation or cleanup is applied.
+  # v0.7.2 — PDF → TEXT
+  def extract_text(document_path)
+    output = `pdftotext "#{document_path}" -`
+    output.strip.empty? ? nil : output
+  rescue
+    nil
+  end
+
+  # Extracts a full document section based on a declared header.
+  #
+  # Strategy:
+  #   1. Split document text into blocks (paragraphs)
+  #   2. Locate the block whose first line matches the section header
+  #   3. Collect that block and all following blocks
+  #   4. Stop when another known section header is encountered
+  #   v0.7.2 — SECTION BOUNDARY EXTRACTION
+  def extract_section(text, section)
+    header_pattern = SECTION_HEADERS[section]
+    return nil unless header_pattern
+
+    blocks = text.split(/\n{2,}/)
+
+    start_index = blocks.find_index do |block|
+      first_line = block.lines.first&.strip
+      first_line&.match?(header_pattern)
+    end
+
+    return nil if start_index.nil?
+
+    collected = []
+
+    blocks[start_index..].each do |block|
+      first_line = block.lines.first&.strip
+
+      if collected.any? &&
+         SECTION_HEADERS.values.any? { |p| first_line&.match?(p) }
+        break
+      end
+
+      collected << block
+    end
+
+    collected.join("\n\n")
   end
 end

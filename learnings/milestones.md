@@ -438,4 +438,86 @@ After v0.7.1, the AI Analyst Assistant:
 
 ***
 
+## **v0.7.2 — Section Identification (Phase 3)**
 
+### **Goal**
+
+* Introduce deterministic **section‑level grounding** within authoritative documents
+* Identify *where* authoritative knowledge lives before extracting meaning
+* Prepare the system for precise, term‑level grounding
+* Preserve execution safety and trust guarantees from earlier milestones
+
+***
+
+### **What We Added**
+
+* Deterministic **PDF → text conversion** using system tooling
+* Structural extraction of declared document sections (e.g. `DEFINITIONS`)
+* Explicit section boundary detection based on human‑authored headers
+* Safe propagation of section content as an intermediate execution artifact
+
+(No semantic interpretation or term matching at this stage.)
+
+***
+
+### **What We Learned**
+
+* Authoritative documents encode intent through **structure**, not keywords
+* Extracting meaning without first anchoring structure leads to ambiguity
+* PDF text extraction produces noisy but **deterministic** artifacts that must be handled cautiously
+* Large section payloads are acceptable as intermediate results
+* Structural failures must surface explicitly, not be guessed around
+
+***
+
+### **Key Capability Added**
+
+* **Section‑Level Grounding**
+  - Locate a requested section using explicit header patterns
+  - Extract only the content bounded by structural markers
+  - Refuse to interpret or summarize section content
+
+This establishes a stable execution boundary between:
+* document presence (v0.7.1)
+* semantic grounding (v0.7.3)
+
+***
+
+### **Failure Semantics (By Design)**
+
+* If the document exists but the requested section does not:
+  → return `NOT_DEFINED`
+* No keyword search, fuzzy matching, or heuristic fallback is attempted
+* Absence of structure is treated as absence of authority
+
+***
+
+### **Mental Model Update**
+
+* **v0.7.1:** *Is the document available?*  
+* **v0.7.2:** **Where inside the document is authoritative knowledge?**
+
+Instead of:
+
+> “Search the document for something relevant…”
+
+The system now guarantees:
+
+> “This entire section is the authoritative scope for this question.”
+
+***
+
+### **Outcome**
+
+After v0.7.2, the AI Analyst Assistant:
+
+* Can deterministically locate authoritative sections within documents
+* Produces large but reliable intermediate grounding artifacts
+* Avoids premature semantic interpretation
+* Establishes the structural foundation required for precise term extraction
+* Enables safe, auditable progression to v0.7.3
+
+✅ **Status:** Complete  
+➡️ **Next:** v0.7.3 — Term‑Level Grounding
+
+***

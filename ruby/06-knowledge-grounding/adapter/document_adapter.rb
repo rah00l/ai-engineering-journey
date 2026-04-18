@@ -19,7 +19,7 @@ class DocumentAdapter
   # @return [String, nil]
   #   String → authoritative content found (future milestones)
   #   nil    → content not available (valid outcome)
-  def fetch_section(source_pointer:, section:, version:)
+  def fetch_section(source_pointer:, section:, version:, term:)
     raise NotImplementedError, "Subclasses must implement fetch_section"
   end
 end
