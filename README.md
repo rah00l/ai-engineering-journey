@@ -99,5 +99,12 @@ the intent, scope, and learnings of that stage.
   - Established explicit section boundaries before any semantic interpretation
   - Preserved safe failure semantics (`NOT_DEFINED`) when structure is absent
 
-  
+- **v0.7.3 – Term‑Level Grounding**
+  👉 [`ruby/06-knowledge-grounding/adapter/`](ruby/06-knowledge-grounding/adapter/)
+  - Introduced explicit term‑level grounding within validated document sections
+  - Required semantic intent (`term`) to be passed explicitly through execution
+  - Extracted exact, authoritative definitions using structural term headers
+  - Enforced strict document vocabulary (no synonym or fuzzy matching)
+  - Preserved safe failure semantics (`NOT_DEFINED`) when terms are not defined
+    
 

@@ -459,3 +459,57 @@ document existence and semantic meaning.
 
 ***
 
+### **Decision 016: Enforce Explicit Term‑Level Grounding Before User Interpretation**
+
+#### Context
+
+After completing section‑level grounding (v0.7.2), the system was capable of
+identifying *where* authoritative knowledge lived inside a document.
+However, early attempts to extract meaning revealed a critical ambiguity:
+
+* The system lacked an explicit representation of *which concept* the user was asking about.
+* Existing identifiers (e.g. document source pointers) were unintentionally reused as semantic placeholders.
+* Vocabulary mismatches between user phrasing and document terminology surfaced silently.
+
+Without a clear semantic boundary, definition extraction risked becoming implicit, inferred, or unsafe.
+
+#### Decision
+
+We introduced **explicit term‑level grounding** (v0.7.3) as a mandatory execution step.
+
+This decision enforces that:
+
+* The semantic **term** being queried must be passed explicitly from intent analysis.
+* Execution adapters must **never infer or guess** the term.
+* Only terms defined exactly in authoritative documentation are considered valid.
+* Vocabulary mismatches result in an explicit `NOT_DEFINED` outcome.
+
+#### Rationale
+
+* Semantic correctness requires explicit intent, not positional or contextual inference.
+* Reusing non‑semantic identifiers (e.g. document names) as terms creates silent coupling.
+* Exact matching preserves auditability and prevents hallucinated definitions.
+* Forcing explicit term propagation exposes contract violations early and safely.
+
+#### Observed Failures (Accepted by Design)
+
+During implementation, the system correctly rejected:
+
+* `PARTIALLY RECONCILED` when the document defines `PARTIAL RECONCILED`
+* `PARSING` when the document defines `PARSED`
+* Informal or conversational status names not declared structurally
+
+These failures validated:
+* The necessity of a strict semantic contract
+* The correctness of refusing approximate matches
+* The need for a **future intent‑mediation layer** rather than weakening grounding rules
+
+#### Impact
+
+* Phase 3 execution is now **semantically precise and closed**
+* Grounded answers are concise, authoritative, and defensible
+* Human‑friendly interpretation is intentionally deferred to later phases
+* Future enhancements can be layered without compromising truth integrity
+
+***
+

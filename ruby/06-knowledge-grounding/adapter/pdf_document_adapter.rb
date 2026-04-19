@@ -58,7 +58,7 @@ class PdfDocumentAdapter < DocumentAdapter
   # Returns:
   #   - Full raw section text if the section can be identified
   #   - nil if the document exists but the section cannot be found
-  def fetch_section(source_pointer:, section:, version:)
+  def fetch_section(source_pointer:, section:, version:, term:)
     document_path = resolve_source_pointer(source_pointer, version)
     return nil unless File.exist?(document_path)
 
@@ -71,6 +71,9 @@ class PdfDocumentAdapter < DocumentAdapter
     # v0.7.2 — SECTION BOUNDARY EXTRACTION
     section_text = extract_section(text, section)
     return nil unless section_text
+
+    # v0.7.3: Extract individual term definition
+    extract_term_definition(section_text, term)
   end
 
   private
@@ -131,5 +134,41 @@ class PdfDocumentAdapter < DocumentAdapter
     end
 
     collected.join("\n\n")
+  end
+
+  # Extracts a single authoritative definition for a term
+  # from within a previously extracted section.
+  #
+  # Strategy:
+  #   - Identify the term name as an uppercase header
+  #   - Collect all subsequent lines until another term header appears
+  #
+
+  # ============================================================
+  # v0.7.3 — TERM-LEVEL GROUNDED EXTRACTION
+  # ============================================================
+  def extract_term_definition(section_text, term)
+    lines = section_text.lines.map(&:rstrip)
+
+    normalized_term = Regexp.escape(term.strip)
+    header_regex = /^#{normalized_term}\b/i
+
+    start_index = lines.find_index do |line|
+      line.strip.match?(header_regex)
+    end
+
+    return nil if start_index.nil?
+
+    collected = []
+
+    lines[(start_index + 1)..].each do |line|
+      # Stop when we hit another term header (uppercase structural boundary)
+      break if line.strip.match?(/^[A-Z\s]{3,}$/)
+
+      collected << line
+    end
+
+    definition = collected.join("\n").strip
+    definition.empty? ? nil : definition
   end
 end

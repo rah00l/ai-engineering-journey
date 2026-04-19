@@ -85,9 +85,49 @@ The adapter now:
 No document content is read or interpreted at this stage.
 
 - **v0.7.2** — Section identification (deterministic blocks)
+
+This milestone introduces **deterministic section‑level grounding** within authoritative documents.
+
+The adapter now:
+
+*   Converts PDF documents into plain text safely at execution time
+*   Identifies *where* authoritative knowledge lives using explicit structural headers (e.g. `DEFINITIONS`)
+*   Extracts bounded document sections using deterministic start/stop rules
+*   Treats document structure as authoritative intent
+
+No semantic interpretation, keyword search, or term matching is performed at this stage.
+
+Failures surface explicitly:
+
+*   If the document exists but the section cannot be identified, execution returns `NOT_DEFINED`.
+
+This milestone establishes the **structural foundation** required for precise semantic grounding.
+
+***
+
 - **v0.7.3** — Term‑level grounding (exact definitions)
 
 Each stage adds execution capability without weakening safety guarantees.
+
+This milestone adds **precise semantic grounding** on top of section identification.
+
+The adapter now:
+
+*   Receives the queried **term explicitly** as a required execution parameter
+*   Locates the exact term definition within a validated document section
+*   Extracts only the authoritative definition text
+*   Enforces strict document vocabulary without inference or synonym matching
+
+Execution behavior is intentionally conservative:
+
+*   If the term is not defined exactly as declared in the document, execution returns `NOT_DEFINED`
+*   No guessing, paraphrasing, or correction is attempted
+
+With v0.7.3, the adapter guarantees:
+
+*   Exact, auditable term definitions
+*   Clear separation between *truth extraction* and *user interpretation*
+*   Completion of Phase 3 (Knowledge Execution & Grounding)
 
 ---
 

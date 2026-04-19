@@ -521,3 +521,86 @@ After v0.7.2, the AI Analyst Assistant:
 ➡️ **Next:** v0.7.3 — Term‑Level Grounding
 
 ***
+
+## **v0.7.3 — Term‑Level Grounding (Phase 3)**
+
+### **Goal**
+
+* Enable **precise, term‑level grounding** within authoritative documentation
+* Bind user questions to **exact document‑defined concepts**
+* Eliminate semantic inference and accidental coupling
+* Complete Phase 3: Knowledge Execution & Grounding
+
+***
+
+### **What We Added**
+
+* Explicit **term propagation** as a first‑class execution input
+* Deterministic extraction of a **single authoritative definition**
+* Structural matching of term headers within validated document sections
+* LLM prompt constraint to explain **only what the document defines**
+
+(No document searching, no synonym resolution, no interpretation.)
+
+***
+
+### **What We Learned**
+
+* Structural grounding alone is insufficient without explicit semantic intent
+* PDF‑derived text introduces noise that must be handled deterministically
+* Reusing identifiers across semantic layers creates hidden failure modes
+* Exact vocabulary enforcement improves trust, even when it reduces recall
+* Human‑friendly behavior must be layered *after* truth is secured
+
+***
+
+### **Key Capability Added**
+
+* **Term‑Level Definition Extraction**
+  - Operates exclusively within validated sections (v0.7.2)
+  - Matches declared term headers structurally (case‑insensitive, exact)
+  - Extracts content until the next structural boundary
+* **Explicit semantic contract**
+  - `term` is mandatory and never inferred
+  - Missing or mismatched terms yield `NOT_DEFINED`
+
+***
+
+### **Failure Semantics (By Design)**
+
+* If a term is not explicitly defined in the document:
+  → return `NOT_DEFINED`
+* No fuzzy matching, correction, or aliasing is attempted
+* Failures surface vocabulary gaps transparently
+
+***
+
+### **Mental Model Update**
+
+* **v0.7.2:** *Where does authoritative knowledge live?*
+* **v0.7.3:** **What exact concept is being defined?**
+
+Instead of:
+
+> “The document probably defines this.”
+
+The system now guarantees:
+
+> “This exact definition comes from this document, section, and term.”
+
+***
+
+### **Outcome**
+
+After v0.7.3, the AI Analyst Assistant:
+
+* Answers definition questions using only authoritative text
+* Produces minimal, audit‑ready outputs
+* Refuses to fabricate meaning when the document is silent
+* Cleanly separates truth extraction from user experience concerns
+* Completes Phase 3 with strong semantic guarantees
+
+✅ **Status:** Locked  
+➡️ **Next:** Phase 4 — Intent Mediation (v0.8)
+
+***
