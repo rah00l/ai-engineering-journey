@@ -513,3 +513,62 @@ These failures validated:
 
 ***
 
+### **Decision 017: Separate Intent Mediation from Knowledge Grounding**
+
+#### Context
+
+After completing Phase 3 (v0.7.0–v0.7.3), the system gained the ability to extract
+authoritative truth from known documents with strict guarantees.
+
+However, real console usage revealed a recurring gap:
+users often phrase questions differently than the vocabulary used in
+authoritative documentation (e.g. “parsing” vs “PARSED”,
+Unicode punctuation variants, informal phrasing).
+
+Embedding such logic directly into grounding would have weakened
+structural guarantees and conflated concerns.
+
+#### Decision
+
+We introduced a dedicated **Intent Mediation layer (v0.8.0)**,
+positioned *before* grounding and *after* user input collection.
+
+This layer:
+
+- Translates human phrasing into canonical document terms
+- Normalizes casing, punctuation, whitespace, and Unicode variants
+- Resolves only **explicit, auditable aliases**
+- Produces a single, explicit intent object
+- Refuses resolution when ambiguity exists
+
+Grounding logic (v0.7.x) remains frozen and untouched.
+
+#### Rationale
+
+- Understanding *what the user means* is orthogonal to *what the document says*
+- Canonicalization must be deterministic, not heuristic
+- Explicit alias mapping preserves auditability
+- Strict failure (`NOT_DEFINED`) is safer than partial guessing
+- A separate intent contract enables future RAG and workflow layers cleanly
+
+#### Observed Outcomes
+
+- User questions with punctuation and Unicode differences resolve correctly
+- Informal phrasing maps cleanly to canonical document terms
+- Ambiguous or workflow‑oriented questions fail safely
+- Errors and status codes resolve intent but defer explanation appropriately
+
+These outcomes validated that intent mediation is necessary,
+but should not expand semantic scope beyond definition intent.
+
+#### Impact
+
+- Grounding remains the single source of document truth
+- UX improves without weakening safety guarantees
+- Alias growth is controlled and explicit
+- Clear handoff point is established for future explanation (v0.9) and retrieval (v1.x)
+
+This decision formalizes intent mediation as a first‑class,
+pre‑grounding semantic layer.
+
+*** 

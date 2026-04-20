@@ -106,5 +106,11 @@ the intent, scope, and learnings of that stage.
   - Extracted exact, authoritative definitions using structural term headers
   - Enforced strict document vocabulary (no synonym or fuzzy matching)
   - Preserved safe failure semantics (`NOT_DEFINED`) when terms are not defined
-    
-
+  
+- **v0.8.0 – Intent Mediation**
+    👉 [`ruby/07-intent-mediation/`](ruby/07-intent-mediation/)
+  -   Introduced an explicit intent‑mediation layer prior to knowledge grounding
+  -   Normalized human phrasing into canonical, document‑compatible terminology
+  -   Added deterministic alias resolution with punctuation and Unicode normalization
+  -   Separated user‑meaning interpretation from document truth extraction
+  -   Preserved all v0.7.x grounding behavior with zero changes to grounded responses

@@ -604,3 +604,111 @@ After v0.7.3, the AI Analyst Assistant:
 ➡️ **Next:** Phase 4 — Intent Mediation (v0.8)
 
 ***
+
+## **v0.8.0 — Intent Mediation (Phase 4)**
+
+### **Goal**
+
+*   Enable **explicit interpretation of user intent** before grounding
+*   Translate human phrasing into **canonical, grounding‑compatible intent**
+*   Eliminate ambiguity caused by informal language, punctuation, and Unicode variance
+*   Preserve the purity and safety guarantees of Phase 3 grounding
+
+***
+
+### **What We Added**
+
+*   A dedicated **pre‑grounding intent mediation layer**
+*   Explicit **intent contract** that separates *meaning* from *truth*
+*   Deterministic canonicalization of:
+    *   casing
+    *   whitespace
+    *   punctuation
+    *   Unicode dash variants (`–`, `—`)
+*   Explicit, auditable **alias → canonical term mappings**
+*   Strict refusal when intent cannot be resolved safely
+
+(No document access, no section routing, no workflow interpretation.)
+
+***
+
+### **What We Learned**
+
+*   Users consistently ask *definition‑shaped questions* using non‑document vocabulary
+*   Unicode punctuation and formatting differences break naive string matching
+*   Canonicalization belongs **before grounding**, not inside it
+*   Alias expansion must be explicit to remain auditable
+*   Resolving *what the user means* is orthogonal to *what the document defines*
+*   Errors and statuses are semantically “definitions” but not necessarily glossary entries
+
+***
+
+### **Key Capability Added**
+
+*   **Intent Mediation Layer**
+    *   Parses definition‑style questions (`What does X mean?`)
+    *   Normalizes user input deterministically (punctuation, spacing, Unicode)
+    *   Resolves aliases to canonical document terms
+    *   Emits a single, structured intent object
+*   **Explicit Intent Contract**
+    *   Intent is produced only when resolution is unambiguous
+    *   No defaults, inference, or fuzzy matching
+    *   Ambiguity yields `NOT_DEFINED`
+*   **Grounding Preservation**
+    *   All grounding logic (v0.7.x) remains frozen
+    *   Intent mediation never alters document truth or extraction rules
+
+***
+
+### **Failure Semantics (By Design)**
+
+*   If intent cannot be resolved deterministically:
+    → return `NOT_DEFINED`
+*   If a canonical term exists but is not defined in the targeted section:
+    → grounding returns `NOT_DEFINED`
+*   No fallback across sections, no guessing, no silent corrections
+
+***
+
+### **Mental Model Update**
+
+*   **v0.7.3:** *What exactly does the document say?*
+*   **v0.8.0:** **What does the user mean, in document terms?**
+
+Instead of:
+
+> “Users must phrase questions exactly like the handbook.”
+
+The system now guarantees:
+
+> “User phrasing is normalized explicitly before grounding logic is invoked.”
+
+***
+
+### **Boundary Clarification**
+
+*   v0.8.0 **does not decide where a concept is defined**
+*   v0.8.0 **does not explain errors or workflows**
+*   v0.8.0 **does not perform retrieval (RAG)**
+
+These concerns are deliberately deferred to later phases.
+
+***
+
+✅ **Status:** Locked  
+➡️ **Next:** v0.9.x — Guided Status & Error Explanations (Semantic Interpretation Layer)
+
+***
+
+### Why this milestone is *correctly scoped*
+
+This milestone completes the separation between:
+
+*   **Meaning resolution** (v0.8)
+*   **Truth extraction** (v0.7)
+*   **Explanation / action guidance** (v0.9+)
+
+No safety guarantees were loosened, and no future capabilities were prematurely introduced.
+
+***
+
