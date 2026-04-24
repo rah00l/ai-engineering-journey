@@ -571,4 +571,171 @@ but should not expand semantic scope beyond definition intent.
 This decision formalizes intent mediation as a first‑class,
 pre‑grounding semantic layer.
 
-*** 
+***
+
+### **Decision 018: Constrain Intent Scope to Interpretive Analysis at v0.9**
+
+#### Context
+
+By the end of v0.8.0, the system successfully introduced **Intent Mediation** to resolve human phrasing into canonical document terms in a deterministic and auditable way.
+
+By v0.9.0, the system further layered **Guided Explanation**, enabling grounded, structured interpretation of reconciliation errors and lifecycle states.
+
+During comprehensive console‑based validation, users naturally posed a wide range of questions, including:
+
+*   interpretive questions (e.g. “What does this status mean?”, “Is this blocking?”)
+*   follow‑up clarification questions (e.g. “Is reconciliation complete?”)
+*   operational and procedural questions (e.g. “How do I fix this?”, “What am I doing wrong?”)
+*   UI‑specific questions (e.g. “Where do I click?”, “Why is the button disabled?”)
+
+While the authoritative handbook contains procedural information, answering such operational questions would require contextual inference, user behavior diagnosis, or system execution semantics.
+
+Without a formal intent boundary, the system risked silently expanding from **interpretation** into **operation**, weakening safety and governance guarantees.
+
+***
+
+#### Decision
+
+We formally constrain **intent scope at v0.9.0** to **interpretive analysis only**.
+
+At v0.9, the system recognizes and responds to intents that request:
+
+*   Explanation of **meaning** of errors and statuses
+*   Clarification of **state** (blocking vs non‑blocking, terminal vs non‑terminal)
+*   Description of **impact** on reconciliation flow
+*   Identification of **ownership or responsibility**
+*   Classification of lifecycle or error semantics
+
+At v0.9, the system explicitly **does not** recognize or satisfy intents that request:
+
+*   Operational instructions or step‑by‑step actions
+*   Diagnostic attribution or causal “what went wrong” analysis
+*   UI navigation or button enablement guidance
+*   Prediction of runtime system behavior
+*   Execution, remediation, or automation
+
+Such intents are intentionally blocked or left unanswered.
+
+Intent Mediation continues to canonicalize *what* concept is being referenced, but **intent satisfaction is bounded by this interpretive contract**.
+
+***
+
+#### Rationale
+
+*   Interpretation and execution are fundamentally different responsibilities
+*   Answering “what to do” implies authority, accountability, and risk
+*   Document presence does not imply permission to operationalize content
+*   Explicit refusal is safer than partially helpful inference
+*   Constraining intent scope preserves deterministic, auditable behavior
+*   Analyzer clarity must not evolve implicitly into operator behavior
+
+This boundary ensures that explanation capability does not silently expand into workflow guidance or decision‑making.
+
+***
+
+#### Observed Outcomes
+
+During v0.9 validation:
+
+*   All interpretive queries resolve correctly and deterministically
+*   Errors and statuses are explained without hallucination
+*   Operational, UI, and procedural questions fail safely
+*   Silence or blocking signals enforced role boundaries
+*   No incorrect or speculative guidance is produced
+
+These outcomes confirm that intent constraint is functioning as designed, not as a missing feature.
+
+***
+
+#### Impact
+
+*   Intent scope at v0.9 is explicitly frozen and auditable
+*   Knowledge grounding and explanation semantics remain intact
+*   Safety and governance guarantees are preserved
+*   Contextual follow‑ups (v0.10) can be layered without changing intent scope
+*   Operational or support‑style capabilities remain clearly out of scope
+
+This decision formally locks **interpretive‑only intent resolution** as a defining property of v0.9.0 and establishes a clear foundation for subsequent, explicitly scoped extensions.
+
+***
+
+### **Decision 019: Establish the Analyzer‑Only Boundary for v0.9**
+
+#### Context
+
+By v0.9.0, the system successfully grounded authoritative knowledge, mediated intent, and produced deterministic, structured explanations for errors and reconciliation states.
+
+However, during extensive console‑based validation, users naturally asked follow‑up questions that fell into two distinct categories:
+
+*   **Interpretive questions** (e.g. “Is this blocking reconciliation?”, “Is reconciliation complete?”)
+*   **Operational questions** (e.g. “What should I do next?”, “How do I fix this?”, “Where do I click?”)
+
+While the authoritative handbook contains procedural and operational descriptions, answering such questions would require the system to infer user actions, system configuration, runtime behavior, or UI state.
+
+Allowing this behavior at v0.9 would blur system responsibility, weaken safety guarantees, and implicitly convert the assistant from an analyzer into an operator.
+
+This required an explicit, formal boundary.
+
+***
+
+#### Decision
+
+We formalize the system’s role at v0.9 as a **strict Analyzer Assistant**, not an Operator or Support Bot.
+
+At v0.9, the system:
+
+*   Explains **meaning**, **state**, **impact**, and **ownership** of reconciliation concepts
+*   Interprets authoritative statuses and errors deterministically
+*   Produces explanations grounded solely in document truth and approved templates
+
+At v0.9, the system explicitly **does not**:
+
+*   Provide step‑by‑step instructions
+*   Diagnose user behavior or assign causal blame
+*   Explain UI navigation or button enablement
+*   Predict runtime system behavior
+*   Recommend or execute corrective actions
+
+Operational, workflow, UI, and diagnostic questions are intentionally blocked or left unanswered.
+
+This boundary is enforced consistently across grounding, explanation, and guardrail layers.
+
+***
+
+#### Rationale
+
+*   Interpretation and execution are fundamentally different responsibilities
+*   Document availability does not imply authority to prescribe action
+*   Operational guidance carries accountability, compliance, and financial risk
+*   Analyzer behavior remains auditable, deterministic, and safe
+*   Clear role separation prevents accidental scope creep and hallucination
+
+This decision ensures that explanation capability does not silently expand into automation or support behavior.
+
+***
+
+#### Observed Outcomes
+
+Through comprehensive workflow testing:
+
+*   All interpretation and state‑based questions resolve correctly
+*   Error and status explanations remain accurate and bounded
+*   Operational queries fail safely without hallucination
+*   Silence or blocking signals boundary enforcement, not missing logic
+*   Users receive clarity without being misled into unsafe actions
+
+These outcomes confirm that intentional refusal is a *correct* system response for out‑of‑scope questions.
+
+***
+
+#### Impact
+
+*   The Analyzer role is explicitly defined and enforced
+*   Knowledge grounding integrity is preserved
+*   Safety and governance guarantees remain intact
+*   Future layers (contextual follow‑ups in v0.10, retrieval in v1.x) integrate cleanly
+*   The system avoids accidental transformation into a support or automation agent
+
+This decision formally locks the **Analyzer‑only contract** for v0.9.0 and establishes a clear foundation for subsequent, explicitly scoped capability expansion.
+
+***

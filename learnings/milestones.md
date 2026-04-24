@@ -712,3 +712,143 @@ No safety guarantees were loosened, and no future capabilities were prematurely 
 
 ***
 
+Perfect — thanks for sharing the **v0.8.0 milestone write‑up**. Below is the **v0.9.0 milestone document**, written in the **same style, structure, tone, and level of precision**, explicitly aligned with everything you’ve built, tested, and locked.
+
+This is ready to drop into your docs as‑is.
+
+***
+
+## **v0.9.0 — Guided Status & Error Explanations (Phase 5)**
+
+### **Goal**
+
+*   Enable **deterministic, analyzable explanations** of errors and reconciliation states
+*   Interpret grounded truth into **human‑understandable meaning**
+*   Preserve strict separation between:
+    *   *what the document says* (v0.7)
+    *   *what the user means* (v0.8)
+    *   *how to explain the concept* (v0.9)
+*   Enforce an **analyzer‑only role**, not an operator or support agent
+*   Maintain safety, governance, and auditability guarantees
+
+***
+
+### **What We Added**
+
+*   A dedicated **Guided Explanation layer** positioned *after grounding*
+*   A formal **Explanation Contract** defining:
+    *   concept type
+    *   blocking semantics
+    *   ownership
+    *   meaning
+    *   impact
+    *   notes and optional guidance
+*   Explicit explanation templates for:
+    *   **Mapping Errors**
+    *   **Blocking Statuses**
+    *   **Terminal Statuses**
+*   Deterministic enforcement of **interpretive scope only**
+*   Clear refusal or silence for operational, diagnostic, or UI‑level questions
+
+(All explanations are derived from grounded concepts; no document retrieval, no inference, no execution.)
+
+***
+
+### **What We Learned**
+
+*   Users naturally expect explanations that go beyond raw definitions
+*   Errors and statuses behave like “definitions”, even when not glossary entries
+*   Mixing explanation logic into grounding would weaken safety guarantees
+*   Interpretation must be structured, not free‑form
+*   Silence is sometimes the *correct* response to preserve boundaries
+*   Analyzer behavior must be explicitly distinguished from operator behavior
+
+***
+
+### **Key Capability Added**
+
+*   **Guided Explanation Layer**
+    *   Accepts a grounded, canonical concept
+    *   Applies a deterministic explanation template
+    *   Emits a structured explanation suitable for UI and audit
+*   **Explanation Templates**
+    *   **MappingErrorTemplate**
+        *   Interprets data‑integrity failures
+        *   Marks reconciliation as blocked
+        *   Identifies responsible ownership
+    *   **StatusTemplate (Blocking)**
+        *   Interprets intermediate lifecycle states
+        *   Clarifies incompleteness and impact
+    *   **TerminalStatusTemplate**
+        *   Interprets lifecycle completion
+        *   Explicitly indicates no further action
+*   **Analyzer‑Only Enforcement**
+    *   No operational steps
+    *   No UI navigation
+    *   No cause diagnosis
+    *   No execution or automation
+
+***
+
+### **Failure Semantics (By Design)**
+
+*   If a concept is grounded but has no explanation template:
+    → return grounded definition only
+*   If a question requests operational guidance:
+    → block or return no response
+*   If a question requests causal diagnosis:
+    → block safely
+*   If a concept is unsupported or undefined:
+    → return `NOT_DEFINED`
+*   No inference, guessing, or role expansion occurs
+
+***
+
+### **Mental Model Update**
+
+*   **v0.7.x:** *What exactly does the document say?*
+*   **v0.8.0:** *What does the user mean, in document terms?*
+*   **v0.9.0:** **How should this grounded truth be explained to a human analyst?**
+
+Instead of:
+
+> “Users must infer meaning from raw statuses and errors.”
+
+The system now guarantees:
+
+> “Every valid error or status can be explained deterministically and safely.”
+
+***
+
+### **Boundary Clarification**
+
+*   v0.9.0 **does not reuse conversational context**
+*   v0.9.0 **does not answer follow‑up projection questions**
+*   v0.9.0 **does not prescribe actions or fixes**
+*   v0.9.0 **does not explain UI behavior**
+*   v0.9.0 **does not perform retrieval (RAG)**
+
+These concerns are deliberately deferred to later phases.
+
+***
+
+✅ **Status:** Locked  
+➡️ **Next:** v0.10 — Contextual Follow‑Ups (Read‑Only Projection Layer)
+
+***
+
+### Why this milestone is *correctly scoped*
+
+This milestone completes the **interpretive layer** of the system while preserving all prior guarantees:
+
+*   Knowledge grounding remains authoritative and frozen
+*   Intent mediation remains deterministic and auditable
+*   Explanations add clarity without adding authority
+*   Safety boundaries prevent accidental operator behavior
+*   The system now behaves as a true **Analyzer Assistant**
+
+No execution logic, workflow guidance, or automation capabilities were introduced,
+ensuring v0.9.0 remains safe, predictable, and extensible.
+
+***
+

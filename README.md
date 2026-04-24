@@ -114,3 +114,17 @@ the intent, scope, and learnings of that stage.
   -   Added deterministic alias resolution with punctuation and Unicode normalization
   -   Separated user‑meaning interpretation from document truth extraction
   -   Preserved all v0.7.x grounding behavior with zero changes to grounded responses
+
+- **v0.9.0 – Guided Status & Error Explanations**
+    👉 [`ruby/08-guided-explanations/`](ruby/08-guided-explanations/)
+  -  Introduced a **post‑grounding explanation layer** for statuses and errors
+  -  Transformed grounded terms into **structured, human‑readable explanations**
+  -  Added a formal **Explanation Contract** for consistent interpretation
+  -  Implemented explicit explanation templates for:
+      -  Mapping Errors
+      -  Blocking Reconciliation States
+      -  Terminal Reconciliation States
+  -  Enforced a strict **analyzer‑only intent scope** (interpretation, not operation)
+  -  Explicitly refused workflow execution, UI guidance, diagnosis, or automation
+  -  Preserved all v0.7.x grounding and v0.8.x intent mediation behavior unchanged
+  -  Produced stable, auditable outputs suitable for downstream UI usage

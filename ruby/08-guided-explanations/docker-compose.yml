@@ -1,0 +1,9 @@
+services:
+  v0_8_0_ai_guided_explanations:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - ../../docs:/docs
+    stdin_open: true
+    tty: true
