@@ -1,0 +1,9 @@
+services:
+  v0_9_0_ai_contextual_reuse:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - ../../docs:/docs
+    stdin_open: true
+    tty: true
