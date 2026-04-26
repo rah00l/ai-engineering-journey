@@ -739,3 +739,216 @@ These outcomes confirm that intentional refusal is a *correct* system response f
 This decision formally locks the **Analyzer‑only contract** for v0.9.0 and establishes a clear foundation for subsequent, explicitly scoped capability expansion.
 
 ***
+
+## **Decision 020: Complete Lifecycle State Explanation Coverage in v0.10**
+
+### Context
+
+By early v0.10 validation, the system reliably explained blocking and terminal reconciliation states and enforced the analyzer‑only boundary established in v0.9.
+
+However, during manual testing with accounting workflows, users consistently asked interpretive questions about **transitional lifecycle states** such as:
+
+*   “What does NEW mean?”
+*   “What does READY mean?”
+*   “What does PARSED mean?”
+*   “What does PROCESSING mean?”
+
+These states are explicitly defined in the authoritative reconciliation handbook and represent the majority of the reconciliation lifecycle.  
+Yet, they were not previously modeled in the explanation layer, resulting in intentional silence that users interpreted as missing knowledge rather than boundary enforcement.
+
+This exposed a distinction between:
+
+*   **Missing explanatory coverage** for legitimate system states
+*   **Correct refusal** of operational or procedural questions
+
+### Decision
+
+We extend v0.10 to include explicit, structured explanations for **transitional lifecycle states**.
+
+At v0.10, the system now:
+
+*   Classifies lifecycle transitional states as first‑class explanatory concepts
+*   Produces deterministic explanations for `NEW`, `READY`, `PROCESSING`, and `PARSED`
+*   Treats transitional states as **informational, non‑blocking, system‑owned**
+
+At v0.10, transitional states:
+
+*   Convey lifecycle position and readiness
+*   Do **not** prescribe action, workflow, or UI behavior
+
+### Rationale
+
+*   Transitional states are part of the authoritative domain model
+*   Explaining *what a state represents* does not imply *how to act*
+*   Analysts require lifecycle visibility to interpret reconciliation progress
+*   Silence for well‑defined states undermines confidence without increasing safety
+
+By introducing transitional explanations, the system maintains strict analyzer behavior while closing a legitimate knowledge gap.
+
+### Observed Outcomes
+
+*   Questions about transitional states resolve deterministically
+*   No operational guidance or UI inference is introduced
+*   Existing explanations and behaviors remain unchanged
+*   Contextual follow‑ups apply uniformly across all lifecycle states
+
+### Impact
+
+*   Full lifecycle state explanation coverage achieved
+*   Analyst trust and interpretability improved
+*   ExplanationBuilder remains deterministic and bounded
+*   v0.10 establishes lifecycle completeness without relationship inference
+
+This decision completes **authoritative state explanation coverage** for v0.10.0.
+
+***
+
+## **Decision 021: Restrict v0.10 Follow‑Ups to Projection‑Only Semantics**
+
+### Context
+
+v0.10 introduced contextual reuse to answer follow‑up questions by projecting fields from an existing `ExplanationContract`.
+
+During validation, users asked follow‑ups such as:
+
+*   “Is this blocking reconciliation?”
+*   “Who owns this?”
+*   “Is reconciliation complete?”
+*   “What happens if I do nothing?”
+
+These questions rely purely on **fields already present** in the explanation and do not require new reasoning.
+
+Conversely, users also asked:
+
+*   “What stage comes after PARSED?”
+*   “What happens next in the lifecycle?”
+
+These required **state‑to‑state relationships**, not projection.
+
+### Decision
+
+We formally restrict **v0.10 follow‑up behavior to projection‑based semantics only**.
+
+At v0.10, the system:
+
+*   Answers follow‑ups by reusing explanation fields (blocking, ownership, completion, impact)
+*   Explicitly does **not** answer lifecycle sequencing or graph‑based questions
+
+Lifecycle questions are classified as **unsupported**, not misinterpreted.
+
+### Rationale
+
+*   Projection is deterministic reuse; sequencing is relational reasoning
+*   Combining these concerns would blur responsibilities
+*   Lifecycle reasoning merits a dedicated abstraction and milestone
+*   Intentional silence is safer than inferred sequencing
+
+This preserves a clear conceptual boundary within v0.10.
+
+### Observed Outcomes
+
+*   Projection‑based follow‑ups work consistently across all states
+*   Lifecycle questions fail safely without hallucination
+*   Boundary enforcement remains consistent and predictable
+
+### Impact
+
+*   Follow‑up behavior remains auditable and bounded
+*   v0.10 avoids accidental inference
+*   Lifecycle reasoning is cleanly deferred to a future milestone
+
+This decision locks **projection‑only contextual reuse** as a v0.10 invariant.
+
+***
+
+## **Decision 022: Introduce a Reference‑Only Lifecycle Map Without Runtime Integration**
+
+### Context
+
+To prepare for future lifecycle reasoning, a canonical reconciliation lifecycle was identified and documented, spanning from file ingestion through terminal reconciliation.
+
+Although the lifecycle was complete and authoritative, integrating it into runtime behavior would introduce **new semantic capabilities** beyond explanation and projection.
+
+### Decision
+
+We introduce a **read‑only reconciliation lifecycle map** in v0.10 as a **reference artifact only**.
+
+At v0.10:
+
+*   The lifecycle map exists as a canonical definition
+*   It is **not** consulted during question answering
+*   No sequencing or ordering responses are produced
+
+### Rationale
+
+*   Lifecycle sequencing introduces relational reasoning
+*   Deferring integration preserves milestone integrity
+*   Early definition avoids future ambiguity
+*   Separation allows explicit, auditable capability expansion
+
+### Observed Outcomes
+
+*   Lifecycle definition is centralized and stable
+*   No observable change in v0.10 behavior
+*   Lifecycle questions remain unanswered by design
+
+### Impact
+
+*   v0.10 remains explanation‑complete but relationship‑agnostic
+*   Architectural clarity is preserved
+*   The system is prepared for lifecycle reasoning without risk
+
+This decision establishes lifecycle awareness **without activating lifecycle inference**.
+
+***
+
+## **Decision 023: Formally Lock and Freeze v0.10.0**
+
+### Context
+
+By the conclusion of v0.10:
+
+*   All reconciliation states and errors are explained authoritatively
+*   Analyzer‑only boundaries are enforced
+*   Contextual projection works consistently
+*   Unsupported questions fail safely
+
+Additional requests now clearly represent **new capability areas** rather than defects.
+
+### Decision
+
+We formally **lock v0.10.0 as a completed milestone**.
+
+No additional capabilities will be introduced into v0.10, including:
+
+*   Lifecycle sequencing
+*   Workflow interpretation
+*   Operational or diagnostic guidance
+
+All relationship‑based or temporal reasoning is deferred to v0.11+.
+
+### Rationale
+
+*   Clear version boundaries prevent silent scope expansion
+*   Stable baselines simplify testing and auditing
+*   New behavior should be explicit, versioned, and intentional
+
+### Impact
+
+*   v0.10 serves as a trusted analytical baseline
+*   v0.11 can introduce lifecycle reasoning cleanly
+*   Documentation and expectations remain aligned
+
+This decision formally **closes v0.10.0** as a complete and stable analyzer milestone.
+
+***
+
+## ✅ Final v0.10 Status
+
+v0.10.0 delivers:
+
+*   Complete reconciliation state explanations
+*   Deterministic contextual follow‑ups
+*   Strict analyzer‑only enforcement
+*   Clear boundaries for future expansion
+

@@ -128,3 +128,37 @@ the intent, scope, and learnings of that stage.
   -  Explicitly refused workflow execution, UI guidance, diagnosis, or automation
   -  Preserved all v0.7.x grounding and v0.8.x intent mediation behavior unchanged
   -  Produced stable, auditable outputs suitable for downstream UI usage
+
+  - **v0.10.0 — Contextual Follow‑Ups (Read‑Only Projection Layer)**
+    👉 [`ruby/09-contextual-reuse/`](ruby/09-contextual-reuse/)
+  - Introduced a **contextual reuse layer** that activates *only after* an authoritative explanation exists
+  - Enabled **follow‑up questions** to be answered by **projecting fields** from a prior `ExplanationContract`
+  - Preserved strict separation between:
+      - *what the document says* (v0.7)
+      - *what the user means* (v0.8)
+      - *how a concept is explained* (v0.9)
+      - *how an explanation is safely reused* (v0.10)
+  - Added a **Follow‑Up Classifier** to identify supported follow‑up intents:
+      - Blocking status (e.g. *“Does this block reconciliation?”*)
+      - Ownership attribution (e.g. *“Who owns this?”*)
+      - Completion / terminal state (e.g. *“Is reconciliation complete?”*)
+      - Impact interpretation (e.g. *“What happens if nothing is done?”*)
+  - Implemented a **Projection Resolver** that:
+      - Reuses fields from an existing explanation
+      - Produces short, deterministic, analyst‑safe responses
+  - Extended explanation coverage to include **Transitional Lifecycle States**:
+      - `NEW`
+      - `READY`
+      - `PROCESSING`
+      - `PARSED`
+  - Explicitly enforced **projection‑only semantics**:
+      - No new grounding
+      - No inference
+      - No lifecycle sequencing
+      - No workflow or UI guidance
+  - Explicitly refused or returned silence for:
+      - Operational questions (*“What should I do next?”*)
+      - Workflow progression (*“How do I move this forward?”*)
+      - Lifecycle ordering (*“What stage comes after PARSED?”*)
+  - Preserved all v0.7.x grounding, v0.8.x intent mediation, and v0.9.x explanation behavior unchanged
+  - Produced stable, auditable outputs suitable for conversational UI follow‑ups without increasing system authority

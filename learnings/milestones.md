@@ -718,7 +718,7 @@ This is ready to drop into your docs as‑is.
 
 ***
 
-## **v0.9.0 — Guided Status & Error Explanations (Phase 5)**
+## **v0.9.0 — Guided Status & Error Explanations (Phase 4)**
 
 ### **Goal**
 
@@ -851,4 +851,149 @@ No execution logic, workflow guidance, or automation capabilities were introduce
 ensuring v0.9.0 remains safe, predictable, and extensible.
 
 ***
+
+Perfect — below is the **v0.10.0 milestone log**, written to **match the exact style, structure, tone, and rigor** of your v0.9.0 sample.  
+You can place this immediately after the v0.9.0 section in your milestone document.
+
+***
+
+## **v0.10.0 — Contextual Follow‑Ups (Read‑Only Projection Layer)**
+
+### **Goal**
+
+*   Enable **context‑aware follow‑up answers** based on prior explanations
+*   Allow analysts to ask *interpretive follow‑ups* without repeating definitions
+*   Preserve strict separation between:
+    *   *what the document says* (v0.7)
+    *   *what the user means* (v0.8)
+    *   *how to explain a concept* (v0.9)
+    *   *how to reuse an explanation safely* (v0.10)
+*   Maintain the **Analyzer‑only role**
+*   Prevent expansion into workflow guidance, diagnosis, or lifecycle inference
+
+***
+
+### **What We Added**
+
+*   A **Contextual Reuse layer** that operates *only after* an authoritative explanation is produced
+*   A session‑persistent **Explanation Context** capable of storing:
+    *   blocking semantics
+    *   ownership
+    *   impact
+    *   terminal status
+*   A **Follow‑Up Classifier** that detects:
+    *   blocking queries
+    *   ownership queries
+    *   completion / terminal queries
+    *   impact queries
+*   A **Projection Resolver** that:
+    *   Reuses fields from an existing `ExplanationContract`
+    *   Emits concise, deterministic follow‑up responses
+*   Explicit handling of **out‑of‑scope questions** during follow‑ups
+
+(All follow‑ups reuse prior explanations; no new grounding, retrieval, or inference occurs.)
+
+***
+
+### **What We Learned**
+
+*   Users naturally ask follow‑ups once meaning is known
+*   Follow‑ups often require *no new knowledge*, only reuse of existing fields
+*   Projection and reasoning are fundamentally different operations
+*   Lifecycle sequencing *feels* like a follow‑up but is not one
+*   Silence or refusal remains valid when a question exceeds projection scope
+*   Contextual reuse dramatically improves usability without increasing authority
+
+***
+
+### **Key Capability Added**
+
+*   **Contextual Follow‑Up Projection Layer**
+    *   Activated only after an explanation exists
+    *   Operates strictly by reusing explanation fields
+    *   Produces short, analyst‑safe answers
+*   **Supported Follow‑Up Types**
+    *   Blocking status (e.g. *“Does this block reconciliation?”*)
+    *   Ownership attribution (e.g. *“Who owns this?”*)
+    *   Completion state (e.g. *“Is reconciliation complete?”*)
+    *   Impact interpretation (e.g. *“What happens if nothing is done?”*)
+*   **Explicit Out‑of‑Scope Detection**
+    *   Workflow guidance
+    *   UI navigation
+    *   Remediation steps
+    *   Diagnostic root‑cause analysis
+
+***
+
+### **Failure Semantics (By Design)**
+
+*   If no prior explanation exists:
+    → do not answer follow‑ups
+*   If a follow‑up requires lifecycle sequencing:
+    → return silence or unknown
+*   If a follow‑up requests operational guidance:
+    → block or refuse safely
+*   If a follow‑up requests new reasoning:
+    → do not infer
+*   No new concepts are introduced during follow‑ups
+
+Follow‑ups are **strictly read‑only projections**, not a reasoning engine.
+
+***
+
+### **Mental Model Update**
+
+*   **v0.7.x:** *What does the document say?*
+*   **v0.8.0:** *What does the user mean in document terms?*
+*   **v0.9.0:** *How should the concept be explained?*
+*   **v0.10.0:** **What else can be said using the same explanation?**
+
+Instead of:
+
+> “Users must restate their question to extract related information.”
+
+The system now guarantees:
+
+> “Once a concept is explained, its implications can be safely reused.”
+
+***
+
+### **Boundary Clarification**
+
+*   v0.10.0 **does not introduce lifecycle sequencing**
+*   v0.10.0 **does not relate states to each other**
+*   v0.10.0 **does not provide next‑step guidance**
+*   v0.10.0 **does not infer temporal progression**
+*   v0.10.0 **does not resolve cause or blame**
+
+Lifecycle ordering and state‑to‑state reasoning are **explicitly deferred**.
+
+***
+
+✅ **Status:** Locked  
+➡️ **Next:** v0.11 — Lifecycle Sequencing (Read‑Only Relationship Layer)
+
+***
+
+### Why this milestone is *correctly scoped*
+
+This milestone completes **contextual understanding** without extending authority:
+
+*   Explanations remain deterministic and auditable
+*   Follow‑ups improve analyst experience without inference
+*   Role boundaries remain intact
+*   Safety guarantees are preserved
+*   New capabilities are added transparently and explicitly
+
+v0.10.0 enhances *usability*, not *agency*, ensuring the system remains a **true Analyzer Assistant**.
+
+***
+
+If you want, next I can:
+
+*   Draft **v0.11 milestone log** in the same format
+*   Prepare a **one‑page v0.10 freeze summary for stakeholders**
+*   Map test cases directly to v0.10 vs v0.11 capabilities
+
+Just tell me what you want next.
 
