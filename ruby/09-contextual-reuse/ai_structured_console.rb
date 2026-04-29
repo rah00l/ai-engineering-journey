@@ -28,6 +28,8 @@ require_relative "explanation_builder"
 require_relative "follow_up_classifier"
 require_relative "boundary_responder"
 require_relative "projection_resolver"
+require_relative "lifecycle/lifecycle_resolver"
+require_relative "lifecycle/reconciliation_life_cycle_map"
 
 # ============================================================
 # Phase 5.2 — Intent Inference
@@ -103,6 +105,14 @@ grounded_controller =
     document_adapter: document_adapter,
     ai: ai
   )
+
+
+def extract_lifecycle_term_from_input(input)
+  ReconciliationLifecycleMap::FLOW.find do |status|
+    input.upcase.include?(status)
+  end
+end
+
 
 # ============================================================
 # Base system prompt
@@ -228,9 +238,16 @@ while (input = STDIN.gets&.strip)
       if result.nil? && context.contextual_explanation
         classifier = FollowUpClassifier.new
         classification = classifier.classify(input)
-
+        
         result =
           case classification
+          when :lifecycle_next
+            state =
+              extract_lifecycle_term_from_input(input) ||
+              extract_lifecycle_term_from_context(context.contextual_explanation)
+
+            LifecycleResolver.new.resolve_next_stage(state)
+
           when :out_of_scope
             BoundaryResponder.new.respond
           when :unknown

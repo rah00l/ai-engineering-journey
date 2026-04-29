@@ -129,36 +129,25 @@ the intent, scope, and learnings of that stage.
   -  Preserved all v0.7.x grounding and v0.8.x intent mediation behavior unchanged
   -  Produced stable, auditable outputs suitable for downstream UI usage
 
-  - **v0.10.0 — Contextual Follow‑Ups (Read‑Only Projection Layer)**
-    👉 [`ruby/09-contextual-reuse/`](ruby/09-contextual-reuse/)
-  - Introduced a **contextual reuse layer** that activates *only after* an authoritative explanation exists
-  - Enabled **follow‑up questions** to be answered by **projecting fields** from a prior `ExplanationContract`
-  - Preserved strict separation between:
-      - *what the document says* (v0.7)
-      - *what the user means* (v0.8)
-      - *how a concept is explained* (v0.9)
-      - *how an explanation is safely reused* (v0.10)
-  - Added a **Follow‑Up Classifier** to identify supported follow‑up intents:
-      - Blocking status (e.g. *“Does this block reconciliation?”*)
-      - Ownership attribution (e.g. *“Who owns this?”*)
-      - Completion / terminal state (e.g. *“Is reconciliation complete?”*)
-      - Impact interpretation (e.g. *“What happens if nothing is done?”*)
-  - Implemented a **Projection Resolver** that:
-      - Reuses fields from an existing explanation
-      - Produces short, deterministic, analyst‑safe responses
-  - Extended explanation coverage to include **Transitional Lifecycle States**:
-      - `NEW`
-      - `READY`
-      - `PROCESSING`
-      - `PARSED`
-  - Explicitly enforced **projection‑only semantics**:
-      - No new grounding
-      - No inference
-      - No lifecycle sequencing
-      - No workflow or UI guidance
-  - Explicitly refused or returned silence for:
-      - Operational questions (*“What should I do next?”*)
-      - Workflow progression (*“How do I move this forward?”*)
-      - Lifecycle ordering (*“What stage comes after PARSED?”*)
-  - Preserved all v0.7.x grounding, v0.8.x intent mediation, and v0.9.x explanation behavior unchanged
-  - Produced stable, auditable outputs suitable for conversational UI follow‑ups without increasing system authority
+-  **v0.10.0 – Contextual Follow‑Ups**
+    👉 [`ruby/09-contextual-reuse/templates`](ruby/09-contextual-reuse/templates/)
+    -  Introduced a **read‑only contextual reuse layer** activated only after an authoritative explanation
+    -  Enabled **follow‑up questions** to be answered by **projecting fields** from an existing `ExplanationContract`
+    -  Added a **Follow‑Up Classifier** for projection‑safe intents  
+        (blocking, ownership, completion, impact)
+    -  Implemented a **Projection Resolver** producing short, deterministic, analyst‑safe responses
+    -  Extended explanation coverage to **transitional lifecycle states** (`NEW`, `READY`, `PROCESSING`, `PARSED`)
+    -  Explicitly enforced **projection‑only semantics** with no inference or sequencing
+    -  Preserved all v0.7 grounding, v0.8 intent mediation, and v0.9 explanation behavior unchanged
+    -  Explicitly refused workflow guidance, lifecycle ordering, or operational instructions
+
+- **v0.11.0 – Lifecycle Sequencing**
+    👉 [`ruby/09-contextual-reuse/lifecycle/`](ruby/09-contextual-reuse/lifecycle/)
+    - Introduced a **read‑only lifecycle sequencing layer** for reconciliation states
+    - Enabled deterministic answers to **state‑ordering questions** (e.g. *“What comes after PARSED?”*)
+    - Centralized canonical lifecycle ordering in a **reference‑only lifecycle map**
+    - Added a dedicated **Lifecycle Resolver** separate from explanation and projection
+    - Explicitly classified lifecycle sequencing as **relationship semantics**, not projection
+    - Preserved all v0.7.x grounding, v0.8.x intent mediation, v0.9.x explanations, and v0.10.x follow‑ups unchanged
+    - Explicitly refused workflow guidance, transition authority, readiness, or execution
+

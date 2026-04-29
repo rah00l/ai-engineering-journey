@@ -35,6 +35,10 @@ class FollowUpClassifier
     "enable", "upload", "retry", "why did"
   ]
 
+  LIFECYCLE_NEXT_PATTERNS = [
+    "what stage comes after", "what comes next", "what happens after"
+  ]
+
   def classify(input)
     normalized = normalize(input)
 
@@ -43,6 +47,7 @@ class FollowUpClassifier
     return :ownership_query if matches?(normalized, OWNERSHIP_PATTERNS)
     return :completion_query if matches?(normalized, COMPLETION_PATTERNS)
     return :impact_query if matches?(normalized, IMPACT_PATTERNS)
+    return :lifecycle_next if matches?(normalized, LIFECYCLE_NEXT_PATTERNS)
 
     :unknown
   end

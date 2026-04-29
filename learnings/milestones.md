@@ -989,11 +989,146 @@ v0.10.0 enhances *usability*, not *agency*, ensuring the system remains a **true
 
 ***
 
-If you want, next I can:
+Below is the **Milestone Log for v0.11**, written to **mirror the structure, tone, and rigor** of your v0.10 log, while clearly capturing what *new capability* was added and what *remains intentionally excluded*.
 
-*   Draft **v0.11 milestone log** in the same format
-*   Prepare a **one‑page v0.10 freeze summary for stakeholders**
-*   Map test cases directly to v0.10 vs v0.11 capabilities
+You can use this verbatim in your roadmap / README / journey log.
 
-Just tell me what you want next.
+***
+
+## **v0.11.0 — Lifecycle Sequencing (Read‑Only Relationship Layer)**
+
+### **Goal**
+
+*   Enable **explicit lifecycle relationship reasoning** between reconciliation states
+*   Allow analysts to ask **ordering questions** once a lifecycle state is known
+*   Introduce lifecycle awareness **without**:
+    *   workflow interpretation
+    *   next‑step guidance
+    *   transition authority
+    *   execution semantics
+*   Preserve strict separation between:
+    *   *what a state means* (v0.9)
+    *   *what can be reused from an explanation* (v0.10)
+    *   *how states relate to one another* (v0.11)
+*   Maintain the **Analyzer‑only role**
+*   Ensure lifecycle reasoning remains:
+    *   deterministic
+    *   auditable
+    *   non‑inferential
+
+***
+
+### **What We Added**
+
+*   A **canonical reconciliation lifecycle map** that defines:
+    *   valid lifecycle states
+    *   their authoritative ordering
+*   A **Lifecycle Sequencing Resolver** that:
+    *   Answers state‑to‑state relationship questions
+    *   Operates purely on canonical lifecycle identifiers
+    *   Produces analyst‑safe, descriptive outputs
+*   Explicit **follow‑up routing** for lifecycle‑type questions
+*   Support for **explicit lifecycle references** supplied directly in the user prompt  
+    (e.g. *“after PARSED”*)
+
+(All lifecycle answers are generated without inference, grounding, or AI fallback.)
+
+***
+
+### **What We Learned**
+
+*   Analysts naturally progress from *meaning* questions to *relationship* questions
+*   Lifecycle sequencing *sounds* like a follow‑up, but is not projection
+*   Explanation artifacts and lifecycle identity are distinct concepts
+*   Attempting to reuse explanation contracts for sequencing introduces ambiguity
+*   Lifecycle reasoning requires:
+    *   explicit identifiers
+    *   a dedicated abstraction
+*   Introducing lifecycle sequencing as read‑only preserves system safety
+
+***
+
+### **Key Capability Added**
+
+*   **Lifecycle Sequencing Layer**
+    *   Answers: *“What stage comes after X?”*
+    *   Answers: *“Is this the final lifecycle stage?”*
+    *   Draws exclusively from a reference lifecycle map
+    *   Never infers workflow or readiness
+*   **Supported Lifecycle Questions**
+    *   *“What stage comes after PARSED?”*
+    *   *“Is FULL RECONCILED terminal?”*
+    *   *“Does anything come after PARTIAL RECONCILED?”*
+*   **Explicit Input Precedence**
+    *   Lifecycle terms mentioned in the question take priority
+    *   Contextual reuse is secondary and guarded
+    *   Blocking and terminal explanations are never treated as lifecycle nodes
+
+***
+
+### **Failure Semantics (By Design)**
+
+*   If no lifecycle state is referenced:
+    → sequencing is not attempted
+*   If a question asks *what to do next*:
+    → not answered (out of scope)
+*   If a question implies execution or readiness:
+    → refused safely
+*   If a lifecycle relationship is undefined:
+    → return nil / silence
+*   No workflow, UI, or operational steps are ever inferred
+
+Lifecycle sequencing is **descriptive only**, not prescriptive.
+
+***
+
+### **Mental Model Update**
+
+*   **v0.7.x:** *What does the document say?*
+*   **v0.8.0:** *What does the user intend?*
+*   **v0.9.0:** *How should the concept be explained?*
+*   **v0.10.0:** *What reusable facts exist in this explanation?*
+*   **v0.11.0:** **How do lifecycle states relate to each other?**
+
+Instead of:
+
+> “Users must inspect documentation to infer lifecycle order.”
+
+The system now guarantees:
+
+> “Once a lifecycle state is identified, its position in the lifecycle can be stated deterministically.”
+
+***
+
+### **Boundary Clarification**
+
+*   v0.11.0 **does not introduce workflow intelligence**
+*   v0.11.0 **does not recommend next actions**
+*   v0.11.0 **does not enforce transitions**
+*   v0.11.0 **does not introduce conditional branching**
+*   v0.11.0 **does not interpret system readiness**
+
+Lifecycle sequencing answers **relationships**, not **instructions**.
+
+***
+
+✅ **Status:** Locked  
+➡️ **Next:** v0.12 — Lifecycle Transition Authority (Roles & Control, Read‑Only)
+
+***
+
+### **Why this milestone is *correctly scoped***
+
+This milestone adds **relational understanding** without extending agency:
+
+*   Lifecycle facts are centralized and authoritative
+*   Sequencing is explicit, not inferred
+*   Explanation and projection layers remain unchanged
+*   Analyzer guarantees remain intact
+*   Future lifecycle control can build safely on a stable base
+
+v0.11.0 expands **observability**, not **capability**, preserving the system as a **true Analyzer Assistant**.
+
+***
+
 

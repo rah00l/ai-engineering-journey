@@ -952,3 +952,220 @@ v0.10.0 delivers:
 *   Strict analyzer‑only enforcement
 *   Clear boundaries for future expansion
 
+***
+
+# ✅ **Decision 024: Activate Lifecycle Sequencing as a First‑Class Read‑Only Capability (v0.11)**
+
+## Context
+
+By the conclusion of v0.10 (Decisions 021–023):
+
+*   Follow‑ups are **projection‑only**
+*   Lifecycle questions are deliberately unsupported
+*   A canonical lifecycle map exists but is inactive
+*   The analyzer refuses relational or temporal inference
+
+User behavior in validation revealed a **new, clearly scoped question class**:
+
+*   “What stage comes after PARSED?”
+*   “Is FULL RECONCILED terminal?”
+*   “Does anything follow PARTIAL RECONCILED?”
+
+These questions:
+
+*   Do **not** ask for meaning
+*   Do **not** ask for impact or ownership
+*   Do **not** ask for instructions
+*   Ask only for **state‑to‑state ordering**
+
+This represents **relational lifecycle semantics**, not explanation or projection.
+
+***
+
+## Decision
+
+We introduce **Lifecycle Sequencing** as an explicit, read‑only reasoning capability in **v0.11**.
+
+At v0.11, the system:
+
+*   Answers lifecycle ordering questions deterministically
+*   Uses a canonical lifecycle map as the sole source of truth
+*   Does **not** infer actions, readiness, or workflows
+*   Does **not** mutate state or recommend next steps
+
+Lifecycle sequencing becomes:
+
+*   ✅ Supported
+*   ✅ Explicit
+*   ✅ Versioned
+*   ✅ Auditable
+
+***
+
+## Scope Definition (Hard Boundaries)
+
+### ✅ v0.11 **Includes**
+
+*   A canonical **ReconciliationLifecycleMap** (read‑only)
+*   A **LifecycleResolver** that:
+    *   Accepts a lifecycle state identifier
+    *   Returns only ordering facts
+*   Follow‑up routing that:
+    *   Detects lifecycle questions
+    *   Resolves them using lifecycle sequencing only
+
+### ❌ v0.11 **Explicitly Excludes**
+
+*   UI or operational guidance
+*   Workflow enforcement
+*   Transition authority (USER vs SYSTEM)
+*   Conditional branching or error repair
+*   Lifecycle visualization or execution
+
+This keeps v0.11 purely **descriptive and relational**.
+
+***
+
+## Rationale
+
+*   Sequencing is **not projection** and must not be forced into v0.10 semantics
+*   Explanation contracts are **presentation artifacts**, not graph nodes
+*   Lifecycle sequencing deserves its own abstraction layer
+*   Introducing it cleanly preserves:
+    *   SRP
+    *   Determinism
+    *   Auditability
+    *   Future extensibility (v0.12+)
+
+Most importantly:
+
+> **Lifecycle sequencing answers “how states relate”, not “what to do next”.**
+
+***
+
+## Architectural Outcome
+
+The system now has **three distinct reasoning classes**:
+
+| Capability               | Version   | Nature      |
+| ------------------------ | --------- | ----------- |
+| Explanation              | v0.7–v0.9 | Descriptive |
+| Projection follow‑ups    | v0.10     | Field reuse |
+| **Lifecycle sequencing** | **v0.11** | Relational  |
+
+Each has:
+
+*   Explicit ownership
+*   Independent evolution
+*   Clear refusal behavior
+
+***
+
+Below is the **formal freeze decision** for the milestone you just completed, written to be **consistent in tone, structure, and rigor** with Decisions 021–024.
+
+You can copy this verbatim into your decisions log.
+
+***
+
+## **Decision 025: Formally Lock and Freeze v0.11.0 (Lifecycle Sequencing)**
+
+### Context
+
+Following the formal freeze of v0.10.0 (Decision 023), v0.11 was introduced to address a **new, well‑scoped reasoning capability**: lifecycle sequencing.
+
+Prior to v0.11:
+
+*   Lifecycle ordering existed only as a reference artifact
+*   Questions such as:
+    *   “What stage comes after PARSED?”
+    *   “Is FULL RECONCILED the final stage?”
+        were intentionally unsupported
+*   Silence was preferred over inferred or speculative answers
+
+During v0.11, lifecycle sequencing was deliberately introduced as a **read‑only, relational capability**, without expanding scope into workflow interpretation, transition enforcement, or operational guidance.
+
+With validation complete, v0.11 behavior is now stable, explicit, and bounded.
+
+***
+
+### Decision
+
+We formally **lock and freeze v0.11.0** as a completed milestone.
+
+No additional capabilities will be introduced into v0.11, including:
+
+*   Transition authority (USER vs SYSTEM)
+*   Readiness or “what should I do next” guidance
+*   Conditional or branching lifecycle logic
+*   Workflow execution or enforcement
+*   UI‑ or job‑driven lifecycle progression
+
+All such capabilities are explicitly deferred to **v0.12+**.
+
+***
+
+### What v0.11 Delivers (Final Scope)
+
+v0.11 provides:
+
+*   ✅ Deterministic answers to lifecycle sequencing questions
+*   ✅ A canonical, read‑only lifecycle map as the single source of truth
+*   ✅ A dedicated resolver for lifecycle relationships
+*   ✅ Explicit separation from explanation and projection semantics
+*   ✅ Analyzer‑only behavior with no state mutation
+
+v0.11 **does not** introduce:
+
+*   Inference
+*   Recommendations
+*   Execution semantics
+*   Hidden coupling to UI or backend jobs
+
+***
+
+### Rationale
+
+*   Lifecycle sequencing is **relational**, not descriptive or projective
+*   Treating it as a distinct milestone preserves conceptual clarity
+*   Freezing v0.11 prevents accidental expansion into workflow semantics
+*   Stable version boundaries simplify testing, documentation, and review
+*   Future milestones can evolve lifecycle authority without refactoring v0.11
+
+By freezing v0.11, lifecycle reasoning becomes **explicitly enabled, auditable, and non‑expanding**.
+
+***
+
+### Observed Outcomes
+
+*   Lifecycle questions now resolve deterministically and authoritatively
+*   No regressions were introduced into v0.10 projection behavior
+*   Explanation templates remain untouched and semantically pure
+*   Unsupported questions continue to fail safely and predictably
+*   Architectural responsibilities remain clearly partitioned
+
+***
+
+### Impact
+
+*   v0.11 serves as a stable baseline for relational lifecycle reasoning
+*   Future enhancements can build on sequencing without reinterpretation
+*   Documentation and behavior are fully aligned
+*   The analyzer contract remains intact and enforceable
+
+***
+
+### Final v0.11 Status
+
+v0.11.0 delivers:
+
+*   Read‑only lifecycle sequencing
+*   Explicit versioned capability expansion
+*   Zero ambiguity about scope or intent
+*   Clean separation of:
+    *   Explanation
+    *   Projection
+    *   Lifecycle relationships
+
+This decision formally **closes v0.11.0** as a complete and stable milestone.
+
+***

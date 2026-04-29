@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "reconciliation_lifecycle_map"
+require_relative "reconciliation_life_cycle_map"
 
 # ============================================================
 # LifecycleResolver
@@ -24,13 +24,13 @@ require_relative "reconciliation_lifecycle_map"
 # - Returns analyst-safe, descriptive responses only
 # ============================================================
 class LifecycleResolver
-  def resolve_next_stage(explanation)
-    current = explanation_term(explanation)
-    next_stage = ReconciliationLifecycleMap.next_stage(current)
+  def resolve_next_stage(state)
+    # current = explanation_term(explanation)
+    next_stage = ReconciliationLifecycleMap.next_stage(state)
 
     return nil unless next_stage
 
-    "After #{current}, the file proceeds to #{next_stage}."
+    "After #{state}, the file proceeds to #{next_stage}."
   end
 
   def resolve_terminal(explanation)
